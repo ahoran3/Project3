@@ -1,3 +1,7 @@
+// Brandon Forster, Matt Hansen, and Alex Horan
+// CAP 4720 Project 3
+// 28 November 2013
+
 "use strict";
 //This function gets called when reading a JSON file. It stores the current xml information.
 
