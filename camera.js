@@ -1,4 +1,4 @@
-function Camera(gl,d,modelUp) // Compute a camera from model's bounding box dimensions
+function Camera(gl,program,d,modelUp) // Compute a camera from model's bounding box dimensions
 {
 	var center = [(d.min[0]+d.max[0])/2,(d.min[1]+d.max[1])/2,(d.min[2]+d.max[2])/2];
 	var diagonal = Math.sqrt(Math.pow((d.max[0]-d.min[0]),2)+Math.pow((d.max[1]-d.min[1]),2)+Math.pow((d.max[2]-d.min[2]),2));
