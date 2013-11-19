@@ -43,10 +43,16 @@ li
 <h2>Project 3</h2>
 Brandon Forster, Matt Hansen, and Alex Horan
 <br><canvas id="myCanvas1" width="600px" height="600px" style="border:1px solid #FF0000; background: pink"></canvas>
-<br>ModelList:<select id="modelList" onchange="newModelFlag=true;">
+<br>Model:<select id="modelList" onchange="newModelFlag=true;">
   <option value="teapot">teapot</option>
   <option value="skull">skull</option>
   <option value="House">House</option>
+</select>
+<br>Environment:<select id="environmentList" onchange="changeEnvironmentFlag=true;">
+  <option value="skybox">sky</option>
+  <option value="colosseum">colosseum</option>
+  <option value="pier">pier</option>
+  <option value="St.Peter's">St.Peter's</option>
 </select>
 Dolly:<input type='button' value='+' onclick="dollyRequired=1;"/>
 	<input type='button' value='-' onclick="dollyRequired=-1;"/>	

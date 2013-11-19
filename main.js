@@ -6,13 +6,13 @@
 //This function gets called when reading a JSON file. It stores the current xml information.
 
 var newModelFlag = true;
+var changeEnvironmentFlag = false;
 var dollyRequired=0;
 var rotateFlag =true;
 var angle=0;
 function toggleRotateFlag(){rotateFlag = !rotateFlag;}
 
 var texCubeObj;
-	
 
 function main(){
     // ... global variables ...
@@ -26,10 +26,9 @@ function main(){
     var gl = canvas.getContext("experimental-webgl", {stencil:true});
 		
     program=createShaderProgram(gl);
-	
-    texCubeObj = loadCubemap(gl,'lib/skybox/',
-		['posx.jpg','negx.jpg','posy.jpg','negy.jpg','posz.jpg','negz.jpg']);
-	
+
+    texCubeObj = loadCubemap(gl,'lib/skybox/', ['posx.jpg','negx.jpg','posy.jpg','negy.jpg','posz.jpg','negz.jpg']);
+
     quadProgram= createQuadProgram(gl);
    
 	
@@ -44,7 +43,13 @@ function main(){
 		{
 			newModel();
 			quad= new Quad(gl, quadProgram, model.getBounds());
-		}
+		}    
+
+        if (changeEnvironmentFlag)
+        {
+            chooseEnvironment(document.getElementById('environmentList').value);
+            changeEnvironmentFlag = false;
+        }
 		
         if (dollyRequired){camera.dolly(0.05*dollyRequired);dollyRequired=0;}
 		
@@ -111,6 +116,12 @@ function main(){
 		reflectionMatrix = new Matrix4();
 		reflectionMatrix.elements = new Float32Array([1,0,0,0, 0,-1,0,0, 0,0,1,0, 0,2*bounds.min[1],0,1]);
     }
+    function chooseEnvironment(choice)
+    {
+        console.log ("chose" + choice);
+        texCubeObj = loadCubemap(gl,'lib/'+choice+'/', ['posx.jpg','negx.jpg','posy.jpg','negy.jpg','posz.jpg','negz.jpg']);
+    }
+
 	function loadCubemap(gl, cubemappath, texturefiles) 
     {
         var tex = gl.createTexture();
