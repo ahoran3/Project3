@@ -5,7 +5,7 @@
 "use strict";
 //This function gets called when reading a JSON file. It stores the current xml information.
 
-var newModelFlag = true;
+var ModelFlag = false;
 var changeEnvironmentFlag = false;
 var dollyRequired=0;
 var rotateFlag =true;
@@ -15,6 +15,8 @@ function toggleRotateFlag(){rotateFlag = !rotateFlag;}
 var texCubeObj;
 
 function main(){
+    document.getElementById("checkbox_teapot").checked = true;
+    console.log("checked the teapot\n")
     // ... global variables ...
     var gl,model,camera,program;
     var quadProgram, quad, reflectionMatrix;
@@ -39,9 +41,10 @@ function main(){
         gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT ); 
 		gl.useProgram(program);
 	
-        if (newModelFlag)
+        if (ModelFlag)
 		{
-			newModel();
+			//newModel();
+            addNewModel();
 			quad= new Quad(gl, quadProgram, model.getBounds());
 		}    
 
@@ -96,6 +99,52 @@ function main(){
        if (rotateFlag){angle++; if (angle > 360) angle -= 360;}
        window.requestAnimationFrame(draw);
     }
+
+    function addNewModel(path)
+    {
+        function getActiveModels()
+        {
+            var activeModels = new Array();
+            if(document.getElementById("checkbox_teapot").checked == true)
+                activeModels.push(document.getElementById("checkbox_teapot").value);
+            if(document.getElementById("checkbox_skull").checked == true)
+                activeModels.push(document.getElementById("checkbox_skull").value);
+            if(document.getElementById("checkbox_house").checked == true)
+                activeModels.push(document.getElementById("checkbox_house").value);
+
+            console.log ("Num active models: " + activeModels.length);
+            return activeModels;
+            //return pathname;
+        }
+
+        function getActiveModelPaths(model_name)
+        {
+            console.log("getting path for " + model_name);
+            var model = new JsonRenderable(gl,program,"./lib/model/"+model_name+"/models/","model.json");
+            if (!model)
+                console.log ("No model could be read");
+            else 
+                ModelFlag = false;
+            return model;
+        }
+
+        // if (model) model.delete();
+        var currModel = getActiveModels();
+        for(var i=0; i < currModel.legth; i++){
+            console.log("processing " + currModel[i].value);
+            getActiveModelPaths(currModel[i]);
+
+            var bounds = model.getBounds();
+            camera = new Camera(gl,program,bounds,[0,1,0]);
+            var newEye=camera.getRotatedCameraPosition(angle);
+            gl.uniform3f(program.uniformLocations["eyePosition"],newEye[0],newEye[1],newEye[2]);
+            
+            reflectionMatrix = new Matrix4();
+            reflectionMatrix.elements = new Float32Array([1,0,0,0, 0,-1,0,0, 0,0,1,0, 0,2*bounds.min[1],0,1]);
+        }
+        return 
+    }
+
     function newModel(path)
     {
         function getCurrentModelPath(){
@@ -107,7 +156,7 @@ function main(){
         console.log(path);
         model=new JsonRenderable(gl,program,"./lib/model/"+path+"/models/","model.json");
         if (!model)alert("No model could be read");
-        else newModelFlag = false;
+        else ModelFlag = false;
         var bounds = model.getBounds();
         camera = new Camera(gl,program,bounds,[0,1,0]);
         var newEye=camera.getRotatedCameraPosition(angle);
