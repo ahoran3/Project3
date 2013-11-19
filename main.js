@@ -1,24 +1,26 @@
 // Brandon Forster, Matt Hansen, and Alex Horan
 // CAP 4720 Project 3
-// 28 November 2013
+// 26 November 2013
 
 "use strict";
 //This function gets called when reading a JSON file. It stores the current xml information.
 
-var ModelFlag = false;
+var ModelFlag = true;
 var changeEnvironmentFlag = false;
-var dollyRequired=0;
 var rotateFlag =true;
+var dollyRequired=0;
+var activeModels = new Array();
 var angle=0;
 function toggleRotateFlag(){rotateFlag = !rotateFlag;}
 
 var texCubeObj;
 
 function main(){
+    //set teapot to default model
     document.getElementById("checkbox_teapot").checked = true;
-    console.log("checked the teapot\n")
+
     // ... global variables ...
-    var gl,model,camera,program;
+    var gl, model, camera, program;
     var quadProgram, quad, reflectionMatrix;
     var canvas = null;
     var messageField = null;
@@ -30,10 +32,11 @@ function main(){
     program=createShaderProgram(gl);
 
     texCubeObj = loadCubemap(gl,'lib/skybox/', ['posx.jpg','negx.jpg','posy.jpg','negy.jpg','posz.jpg','negz.jpg']);
+    console.log("made the cube object\n");
 
     quadProgram= createQuadProgram(gl);
-   
-	
+    console.log("made the quad program\n");
+    
     gl.clearColor(0,0,0,1);
     draw();
     return 1;
@@ -43,9 +46,11 @@ function main(){
 	
         if (ModelFlag)
 		{
-			//newModel();
-            addNewModel();
-			quad= new Quad(gl, quadProgram, model.getBounds());
+            console.log("model flag triggered!\n");
+            model = addNewModel();
+            console.log("past adding models");
+			quad = new Quad(gl, quadProgram, model.getBounds());
+            ModelFlag = false;
 		}    
 
         if (changeEnvironmentFlag)
@@ -54,7 +59,11 @@ function main(){
             changeEnvironmentFlag = false;
         }
 		
-        if (dollyRequired){camera.dolly(0.05*dollyRequired);dollyRequired=0;}
+        if (dollyRequired)
+        {
+            camera.dolly(0.05*dollyRequired);
+            dollyRequired=0;
+        }
 		
         var projMatrix = camera.getProjMatrix();
         gl.uniformMatrix4fv(program.uniformLocations["projT"], false, projMatrix.elements);
@@ -100,41 +109,61 @@ function main(){
        window.requestAnimationFrame(draw);
     }
 
-    function addNewModel(path)
+    //function looks through possible models and decides which ones need to be rendered on the canvas. 
+    //Returns a list of models to be rendered for the draw function.
+    function addNewModel()
     {
+        //decides which models to put in the Active models array
         function getActiveModels()
         {
-            var activeModels = new Array();
-            if(document.getElementById("checkbox_teapot").checked == true)
-                activeModels.push(document.getElementById("checkbox_teapot").value);
-            if(document.getElementById("checkbox_skull").checked == true)
-                activeModels.push(document.getElementById("checkbox_skull").value);
-            if(document.getElementById("checkbox_house").checked == true)
-                activeModels.push(document.getElementById("checkbox_house").value);
+            //if model is checked and it does not already exist in the active models list, add it.
+            if(document.getElementById("checkbox_teapot").checked == true && activeModels.indexOf("teapot") == -1)
+                activeModels.push("teapot");
+            else
+                delete activeModels[teapot];
+
+            if(document.getElementById("checkbox_skull").checked == true && activeModels.indexOf("skull") == -1)
+                activeModels.push("skull");
+            else
+                delete activeModels["skull"];
+
+            if(document.getElementById("checkbox_house").checked == true && activeModels.indexOf("House") == -1)
+                activeModels.push("House");
+            else
+                delete activeModels["House"];
 
             console.log ("Num active models: " + activeModels.length);
+            for(var i=0; i < activeModels.length; i++)
+                console.log(activeModels[i] + " at index " + i);
+            
             return activeModels;
-            //return pathname;
         }
 
+        //puts a the current model name with the path and generates a Json Renderable
+        //Returns the renderable for that model if it was successful.
         function getActiveModelPaths(model_name)
         {
             console.log("getting path for " + model_name);
             var model = new JsonRenderable(gl,program,"./lib/model/"+model_name+"/models/","model.json");
-            if (!model)
+            if (!model){
                 console.log ("No model could be read");
-            else 
-                ModelFlag = false;
-            return model;
+                return;
+            }
+            else
+                return model;
         }
-
-        // if (model) model.delete();
+        //if (model) model.delete();
+        ModelFlag = false;
         var currModel = getActiveModels();
-        for(var i=0; i < currModel.legth; i++){
-            console.log("processing " + currModel[i].value);
-            getActiveModelPaths(currModel[i]);
+        model = new Array();
+        console.log("there are currently "+currModel.length+" models in currModels");
+        //loops through all active models
+        for(var i=0; i < currModel.length; i++)
+        {
+            console.log("processing " + currModel[i]);
+            model.push(getActiveModelPaths(currModel[i]));
 
-            var bounds = model.getBounds();
+            var bounds = model[i].getBounds();
             camera = new Camera(gl,program,bounds,[0,1,0]);
             var newEye=camera.getRotatedCameraPosition(angle);
             gl.uniform3f(program.uniformLocations["eyePosition"],newEye[0],newEye[1],newEye[2]);
@@ -142,29 +171,30 @@ function main(){
             reflectionMatrix = new Matrix4();
             reflectionMatrix.elements = new Float32Array([1,0,0,0, 0,-1,0,0, 0,0,1,0, 0,2*bounds.min[1],0,1]);
         }
-        return 
+        //return a list of all active JSON renderables for Draw.
+        return model[0];
     }
 
-    function newModel(path)
-    {
-        function getCurrentModelPath(){
-            return document.getElementById("modelList").value;
-            //return pathname;
-        }
-        if (model) model.delete();
-        if (!path) path = getCurrentModelPath();
-        console.log(path);
-        model=new JsonRenderable(gl,program,"./lib/model/"+path+"/models/","model.json");
-        if (!model)alert("No model could be read");
-        else ModelFlag = false;
-        var bounds = model.getBounds();
-        camera = new Camera(gl,program,bounds,[0,1,0]);
-        var newEye=camera.getRotatedCameraPosition(angle);
-        gl.uniform3f(program.uniformLocations["eyePosition"],newEye[0],newEye[1],newEye[2]);
+  //   function newModel(path)
+  //   {
+  //       function getCurrentModelPath(){
+  //           return document.getElementById("modelList").value;
+  //           //return pathname;
+  //       }
+  //       if (model) model.delete();
+  //       if (!path) path = getCurrentModelPath();
+  //       console.log(path);
+  //       model=new JsonRenderable(gl,program,"./lib/model/"+path+"/models/","model.json");
+  //       if (!model)alert("No model could be read");
+  //       else ModelFlag = false;
+  //       var bounds = model.getBounds();
+  //       camera = new Camera(gl,program,bounds,[0,1,0]);
+  //       var newEye=camera.getRotatedCameraPosition(angle);
+  //       gl.uniform3f(program.uniformLocations["eyePosition"],newEye[0],newEye[1],newEye[2]);
 		
-		reflectionMatrix = new Matrix4();
-		reflectionMatrix.elements = new Float32Array([1,0,0,0, 0,-1,0,0, 0,0,1,0, 0,2*bounds.min[1],0,1]);
-    }
+		// reflectionMatrix = new Matrix4();
+		// reflectionMatrix.elements = new Float32Array([1,0,0,0, 0,-1,0,0, 0,0,1,0, 0,2*bounds.min[1],0,1]);
+  //   }
     function chooseEnvironment(choice)
     {
         console.log ("chose" + choice);

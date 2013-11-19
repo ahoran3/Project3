@@ -1,6 +1,6 @@
 // Brandon Forster, Matt Hansen, and Alex Horan
 // CAP 4720 Project 3
-// 28 November 2013
+// 26 November 2013
 
 function Camera(gl,program,d,modelUp) // Compute a camera from model's bounding box dimensions
 {

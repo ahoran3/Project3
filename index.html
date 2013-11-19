@@ -1,34 +1,12 @@
 <!--Brandon Forster, Matt Hansen, and Alex Horan
     CAP 4720- Project 3
-    28 November 2013 -->
+    26 November 2013 -->
 
 <!DOCTYPE html>
 <html>
 <head charset="UTF-8">
 <title>Project 3</title>
-<style type="text/css">
-textarea {
-    border: thin solid black;
-    position: relative;
-    left: 5px;
-    width: 75%;
-    font: 10pt Consolas;
-    overflow-x:auto;
-    background-color: lightgray;
-    color: brown;
-}
-p
-{
-    text-align:justify;
-    text-indent:25px;
-    width: 90%;
-}
-li
-{
-    text-align:justify;
-    width: 90%;
-}
-</style>
+<link rel="stylesheet" type="text/css" href="lib/style.css">
 <script src="lib/webgl-utils.js"></script>
 <script src="lib/webgl-debug.js"></script>
 <script src="lib/cuon-utils.js"></script>
@@ -43,12 +21,18 @@ li
 <h2>Project 3</h2>
 Brandon Forster, Matt Hansen, and Alex Horan
 <br><canvas id="myCanvas1" width="600px" height="600px" style="border:1px solid #FF0000; background: pink"></canvas>
-<br>Model:<select id="modelList" onchange="newModelFlag=true;">
+<!-- <br>Model:<select id="modelList" onchange="newModelFlag=true;">
   <option value="teapot">teapot</option>
   <option value="skull">skull</option>
   <option value="House">House</option>
-</select>
-<br>Environment:<select id="environmentList" onchange="changeEnvironmentFlag=true;">
+</select> -->
+<br/>Models:
+<input type="checkbox" id="checkbox_teapot" value="teapot" onclick="ModelFlag=true;"/>Teapot
+<input type="checkbox" id="checkbox_skull" value="skull" onclick="ModelFlag=true;"/>Skull
+<input type="checkbox" id="checkbox_house" value="House" onclick="ModelFlag=true;"/>House
+<button type="submit" onclick="ModelFlag=true;">Submit</button>
+
+<br/>Environment:<select id="environmentList" onchange="changeEnvironmentFlag=true;">
   <option value="skybox">sky</option>
   <option value="colosseum">colosseum</option>
   <option value="pier">pier</option>
@@ -56,7 +40,7 @@ Brandon Forster, Matt Hansen, and Alex Horan
 </select>
 Dolly:<input type='button' value='+' onclick="dollyRequired=1;"/>
 	<input type='button' value='-' onclick="dollyRequired=-1;"/>	
-	<br>
-	Toggle Rotate: <input type='button' value='Toggle' onclick="toggleRotateFlag();"/>	
+<br>
+Toggle Rotate: <input type='button' value='Toggle' onclick="toggleRotateFlag();"/>	
 </body>
 </html>

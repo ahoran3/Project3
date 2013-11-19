@@ -1,0 +1,25 @@
+body {
+    background: url('BG.jpg') 0 0;
+}
+
+textarea {
+    border: thin solid black;
+    position: relative;
+    left: 5px;
+    width: 75%;
+    font: 10pt Consolas;
+    overflow-x:auto;
+    background-color: lightgray;
+    color: brown;
+}
+p
+{
+    text-align:justify;
+    text-indent:25px;
+    width: 90%;
+}
+li
+{
+    text-align:justify;
+    width: 90%;
+}
