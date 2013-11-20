@@ -11,8 +11,8 @@ function parseJSON(jsonFile) {
     var Doc = xhttp.responseText;
     return JSON.parse(Doc);
 }
-function JsonRenderable(gl, program, modelPath, modelfilename) {
-    var model = parseJSON(modelPath + modelfilename);
+function JsonRenderable(gl, program, model_name, modelfilename) {
+    var model = parseJSON("./lib/model/"+model_name+"/models/" + modelfilename);
     var diffuseTexObjs = loadDiffuseTextures();
     var meshDrawables = loadMeshes(gl.TRIANGLES);
     var nodeTransformations = computeNodeTrasformations();
@@ -36,15 +36,17 @@ function JsonRenderable(gl, program, modelPath, modelfilename) {
             for (var j = 0; j < nMeshes; j++) {
                 var meshIndex = node.meshIndices[j];
                 var materialIndex = model.meshes[meshIndex].materialIndex;
-
-                var r = model.materials[materialIndex].diffuseReflectance;
-                gl.uniform3f(program.uniformLocations["diffuseCoeff"], r[0], r[1], r[2]);
+                if(model.materials)
+                {
+                    var r = model.materials[materialIndex].diffuseReflectance;
+                    gl.uniform3f(program.uniformLocations["diffuseCoeff"], r[0], r[1], r[2]);
+                }
                 if (texCubeObj.complete) {
                     gl.activeTexture(gl.TEXTURE0);
                     gl.bindTexture(gl.TEXTURE_CUBE_MAP, texCubeObj);
                     gl.uniform1i(program.uniformLocations["cubemap"], 0);
                 }
-                else if (diffuseTexObjs[materialIndex] && diffuseTexObjs[materialIndex].complete) {
+                else if (model.materials && diffuseTexObjs[materialIndex] && diffuseTexObjs[materialIndex].complete) {
                     gl.activeTexture(gl.TEXTURE0);
                     gl.bindTexture(gl.TEXTURE_2D, diffuseTexObjs[materialIndex]);
                     gl.uniform1i(program.uniformLocations["diffuseTex"], 0);
@@ -156,20 +158,27 @@ function JsonRenderable(gl, program, modelPath, modelfilename) {
         }
         var imageDictionary = {};
         var texObjs = [];
-        for (var i = 0; i < model.materials.length; i++) {
-            if (model.materials[i].diffuseTexture) {
-                var filename = model.materials[i].diffuseTexture[0];//.replace(".tga",".jpg");
-                if (filename) {
-                    //console.log(filename);
-                    if (imageDictionary[filename] === undefined) {
-                        imageDictionary[filename] = setTexture(gl, modelPath + filename);
+        if(model.materials)
+        {
+            for (var i = 0; i < model.materials.length; i++) 
+            {
+                if (model.materials[i].diffuseTexture) 
+                {
+                    var filename = model.materials[i].diffuseTexture[0];//.replace(".tga",".jpg");
+                    if (filename) 
+                    {
+                        //console.log(filename);
+                        if (imageDictionary[filename] === undefined) 
+                        {
+                            imageDictionary[filename] = setTexture(gl, "./lib/model/"+model_name+"/models/" + filename);
+                        }
+                        texObjs[i] = imageDictionary[filename];
                     }
-                    texObjs[i] = imageDictionary[filename];
+                    else texObjs[i] = undefined;
                 }
-                else texObjs[i] = undefined;
             }
+            return texObjs;
         }
-        return texObjs;
     }
 
 
@@ -187,7 +196,16 @@ function JsonRenderable(gl, program, modelPath, modelfilename) {
                 }
                 // Bind the buffer object to an ARRAY_BUFFER target
                 gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffers[i]);
-                // Write date into the buffer object
+
+                //custom translate the objects outside of JSON file -- THIS IS MAKING THE OBJECTS FADE IN AND OUT (Not affecting the floor)
+                // for(var ii = 0; ii < vArrays[i].length; ii++)
+                // {
+                //     vArrays[i][ii] += 60;
+                //     ii++;
+                //     ii++;
+                // }
+
+                // Write data into the buffer object
                 gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vArrays[i]), gl.STATIC_DRAW);
             }
             else {
@@ -304,7 +322,13 @@ function JsonRenderable(gl, program, modelPath, modelfilename) {
         var dim = {};
         dim.min = [xmin, ymin, zmin];
         dim.max = [xmax, ymax, zmax];
-        //console.log(dim);
+        model.diagonal = Math.sqrt(Math.pow((dim.max[0]-dim.min[0]),2)+Math.pow((dim.max[1]-dim.min[1]),2)+Math.pow((dim.max[2]-dim.min[2]),2));
+        console.log(model_name + "'s unaltered dimensions are " + dim.min+ ", "+ dim.max);
+        console.log(model_name + "'s diagonal is " +model.diagonal);
+
+        //set constant dimensions for camera 
+        dim.min = [-30,-15, -10];
+        dim.max = [30, 15,10];
         return dim;
     }
 }

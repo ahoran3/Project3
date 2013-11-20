@@ -17,8 +17,9 @@ var texCubeObj;
 
 function main(){
     //set teapot to default model
-    document.getElementById("checkbox_teapot").checked = true;
-
+    document.getElementById("checkbox_house").checked = true;
+    activeModels.push("floor");
+    //activeModels.push("teapot");
     // ... global variables ...
     var gl, model, camera, program;
     var quadProgram, quad, reflectionMatrix;
@@ -89,7 +90,7 @@ function main(){
 		gl.stencilFunc(gl.EQUAL, 1, 0xFF);
 
 		gl.useProgram(program);
-		for(var i=0;i<model.length;i++)
+		for(var i=1;i<model.length;i++)
             model[i].draw(reflectionMatrix);
 
 
@@ -144,15 +145,26 @@ function main(){
             }
 
             //HOUSE
-            elem_spot = activeModels.indexOf("House");
+            elem_spot = activeModels.indexOf("house");
             if(document.getElementById("checkbox_house").checked == true && elem_spot == -1){
-                activeModels.push("House");
+                activeModels.push("house");
             }
             if(document.getElementById("checkbox_house").checked == false && elem_spot != -1){
                 activeModels.splice(elem_spot, 1);
                 console.log ("deleting house");
             }
-            console.log ("Num active models: " + activeModels.length);
+
+            //CUBE
+            elem_spot = activeModels.indexOf("cube");
+            if(document.getElementById("checkbox_cube").checked == true && elem_spot == -1){
+                activeModels.push("cube");
+            }
+            if(document.getElementById("checkbox_cube").checked == false && elem_spot != -1){
+                activeModels.splice(elem_spot, 1);
+                console.log ("deleting cube");
+            }
+
+            console.log (activeModels.length + " active models: ");
             for(var i=0; i < activeModels.length; i++)
                 console.log("\t" + activeModels[i] + " at index " + i);
             if(activeModels.length == 0)
@@ -164,7 +176,7 @@ function main(){
         //Returns the renderable for that model if it was successful.
         function getActiveModelPaths(model_name)
         {
-            var model = new JsonRenderable(gl,program,"./lib/model/"+model_name+"/models/","model.json");
+            var model = new JsonRenderable(gl,program, model_name,"model.json");
             if (!model){
                 console.log ("No model could be read");
                 return;
@@ -172,14 +184,13 @@ function main(){
             else
                 return model;
         }
-        //if (model) model.delete();
+
         var currModel = getActiveModels();
         model = new Array();
-        console.log("there are currently "+currModel.length+" models in currModels");
+
         //loops through all active models
         for(var i=0; i < currModel.length; i++)
         {
-            console.log("processing " + currModel[i]);
             model.push(getActiveModelPaths(currModel[i]));
 
             var bounds = model[i].getBounds();
@@ -194,26 +205,6 @@ function main(){
         return model;
     }
 
-  //   function newModel(path)
-  //   {
-  //       function getCurrentModelPath(){
-  //           return document.getElementById("modelList").value;
-  //           //return pathname;
-  //       }
-  //       if (model) model.delete();
-  //       if (!path) path = getCurrentModelPath();
-  //       console.log(path);
-  //       model=new JsonRenderable(gl,program,"./lib/model/"+path+"/models/","model.json");
-  //       if (!model)alert("No model could be read");
-  //       else ModelFlag = false;
-  //       var bounds = model.getBounds();
-  //       camera = new Camera(gl,program,bounds,[0,1,0]);
-  //       var newEye=camera.getRotatedCameraPosition(angle);
-  //       gl.uniform3f(program.uniformLocations["eyePosition"],newEye[0],newEye[1],newEye[2]);
-		
-		// reflectionMatrix = new Matrix4();
-		// reflectionMatrix.elements = new Float32Array([1,0,0,0, 0,-1,0,0, 0,0,1,0, 0,2*bounds.min[1],0,1]);
-  //   }
     function chooseEnvironment(choice)
     {
         console.log ("chose" + choice);
