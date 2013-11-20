@@ -31,7 +31,7 @@ function createShaderProgram(gl)
 	  'varying vec2 tCoord;\n'+
 	  'varying vec3 fragPosition,fragNormal, fragViewDir;\n'+
 	  'void main() {\n' +
-	  '	 float costheta = max(dot(normalize(-fragPosition),normalize(fragNormal)),0.0);\n'+
+	  '	 float costheta = 1.0;\n'+
 	 '  vec3 viewDir = normalize(fragViewDir);\n'+
 	 '	vec3 normal = normalize(fragNormal);\n' +
 	  '	vec3 reflectDirection = reflect(viewDir,normal);\n' +
