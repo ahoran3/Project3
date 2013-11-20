@@ -52,7 +52,6 @@ function main(){
 		{
             console.log("model flag triggered!\n");
             model = addNewModel();
-			quad = new Quad(gl, quadProgram, model[0].getBounds());
             ModelFlag = false;
 		}    
 
@@ -74,31 +73,26 @@ function main(){
         gl.uniformMatrix4fv(program.uniformLocations["viewT"], false, viewMatrix.elements);
 		
 		gl.depthMask(false);
-		gl.colorMask(false,false,false,false);
-
 		
 		gl.enable(gl.STENCIL_TEST);
 		gl.stencilOp(gl.REPLACE, gl.REPLACE, gl.REPLACE);
 		gl.stencilFunc(gl.ALWAYS, 1, 0xFF);
-		gl.useProgram(quadProgram);
-		quad.draw();
+		model[0].draw();
 
-		gl.depthMask(true);
 		gl.colorMask(true,true,true,true);
 
 		gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
 		gl.stencilFunc(gl.EQUAL, 1, 0xFF);
 
-		gl.useProgram(program);
+		gl.enable(gl.BLEND);
+		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+		
+		model[0].draw(); //TODO draw with alpha
+		
+		gl.depthMask(true);
+		
 		for(var i=1;i<model.length;i++)
             model[i].draw(reflectionMatrix);
-
-
-		gl.enable(gl.BLEND);
-		gl.disable(gl.DEPTH_TEST);
-		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		gl.useProgram(quadProgram);
-		//quad.draw(0.5);
 
 		gl.disable(gl.BLEND);
 		gl.disable(gl.STENCIL_TEST);
@@ -106,7 +100,7 @@ function main(){
 
 		gl.useProgram(program);
         
-        for(var i=0;i<model.length;i++)
+        for(var i=1;i<model.length;i++)
             model[i].draw();
 		
         gl.useProgram(null);
