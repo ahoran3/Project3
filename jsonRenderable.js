@@ -196,7 +196,16 @@ function JsonRenderable(gl, program, model_name, modelfilename) {
                 }
                 // Bind the buffer object to an ARRAY_BUFFER target
                 gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffers[i]);
-                // Write date into the buffer object
+
+                //custom translate the objects outside of JSON file -- THIS IS MAKING THE OBJECTS FADE IN AND OUT (Not affecting the floor)
+                // for(var ii = 0; ii < vArrays[i].length; ii++)
+                // {
+                //     vArrays[i][ii] += 60;
+                //     ii++;
+                //     ii++;
+                // }
+
+                // Write data into the buffer object
                 gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vArrays[i]), gl.STATIC_DRAW);
             }
             else {
@@ -313,8 +322,11 @@ function JsonRenderable(gl, program, model_name, modelfilename) {
         var dim = {};
         dim.min = [xmin, ymin, zmin];
         dim.max = [xmax, ymax, zmax];
+        model.diagonal = Math.sqrt(Math.pow((dim.max[0]-dim.min[0]),2)+Math.pow((dim.max[1]-dim.min[1]),2)+Math.pow((dim.max[2]-dim.min[2]),2));
         console.log(model_name + "'s unaltered dimensions are " + dim.min+ ", "+ dim.max);
+        console.log(model_name + "'s diagonal is " +model.diagonal);
 
+        //set constant dimensions for camera 
         dim.min = [-30,-15, -10];
         dim.max = [30, 15,10];
         return dim;

@@ -9,10 +9,10 @@ function Camera(gl,program,d,modelUp) // Compute a camera from model's bounding 
 	//console.log(center+" "+diagonal);
 	
 	var name = "auto";
-	var at = [center[0], center[1], center[2]];;
-	var eye = [at[0], at[1], at[2]+diagonal*1.5];
+	var at = [center[0], center[1]+diagonal*.5, center[2]];;
+	var eye = [at[0], at[1], at[2]-diagonal*4];
 	var up = [modelUp[0],modelUp[1],modelUp[2]];
-	var near = diagonal*0.1;
+	var near = diagonal*0.3;
 	var far = diagonal*8;
 	var FOV = 32;
 	this.dolly=function(delta){

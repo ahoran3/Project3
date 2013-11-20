@@ -17,7 +17,7 @@ var texCubeObj;
 
 function main(){
     //set teapot to default model
-    document.getElementById("checkbox_teapot").checked = true;
+    document.getElementById("checkbox_house").checked = true;
     activeModels.push("floor");
     //activeModels.push("teapot");
     // ... global variables ...
@@ -164,16 +164,6 @@ function main(){
                 console.log ("deleting cube");
             }
 
-            // //FLOOR
-            // elem_spot = activeModels.indexOf("floor");
-            // if(document.getElementById("checkbox_floor").checked == true && elem_spot == -1){
-            //     activeModels.push("floor");
-            // }
-            // if(document.getElementById("checkbox_floor").checked == false && elem_spot != -1){
-            //     activeModels.splice(elem_spot, 1);
-            //     console.log ("deleting floor");
-            // }
-
             console.log (activeModels.length + " active models: ");
             for(var i=0; i < activeModels.length; i++)
                 console.log("\t" + activeModels[i] + " at index " + i);
@@ -194,7 +184,7 @@ function main(){
             else
                 return model;
         }
-        //if (model) model.delete();
+
         var currModel = getActiveModels();
         model = new Array();
 
