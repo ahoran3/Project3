@@ -7,10 +7,10 @@
 
 var ModelFlag = true;
 var changeEnvironmentFlag = false;
-var rotateFlag =true;
-var dollyRequired=0;
+var rotateFlag = true;
+var dollyRequired = 0;
 var activeModels = new Array();
-var angle=0;
+var angle = 0;
 function toggleRotateFlag(){rotateFlag = !rotateFlag;}
 
 var texCubeObj;
@@ -32,10 +32,13 @@ function main(){
     program=createShaderProgram(gl);
 
     texCubeObj = loadCubemap(gl,'lib/skybox/', ['posx.jpg','negx.jpg','posy.jpg','negy.jpg','posz.jpg','negz.jpg']);
-    console.log("made the cube object\n");
+    if(texCubeObj == null){
+        console.log("problem loading the Environment.");
+    }
 
-    quadProgram= createQuadProgram(gl);
-    console.log("made the quad program\n");
+    quadProgram = createQuadProgram(gl);
+    if(quadProgram == null)
+        console.log("problem making the quad program");
     
     gl.clearColor(0,0,0,1);
     draw();
@@ -48,8 +51,7 @@ function main(){
 		{
             console.log("model flag triggered!\n");
             model = addNewModel();
-            console.log("past adding models");
-			quad = new Quad(gl, quadProgram, model.getBounds());
+			quad = new Quad(gl, quadProgram, model[0].getBounds());
             ModelFlag = false;
 		}    
 
@@ -87,7 +89,8 @@ function main(){
 		gl.stencilFunc(gl.EQUAL, 1, 0xFF);
 
 		gl.useProgram(program);
-		model.draw(reflectionMatrix);
+		for(var i=0;i<model.length;i++)
+            model[i].draw(reflectionMatrix);
 
 
 		gl.enable(gl.BLEND);
@@ -101,7 +104,9 @@ function main(){
 		gl.enable(gl.DEPTH_TEST);
 
 		gl.useProgram(program);
-		model.draw();
+        
+        for(var i=0;i<model.length;i++)
+            model[i].draw();
 		
         gl.useProgram(null);
 
@@ -116,26 +121,42 @@ function main(){
         //decides which models to put in the Active models array
         function getActiveModels()
         {
+            var elem_spot = activeModels.indexOf("teapot");
             //if model is checked and it does not already exist in the active models list, add it.
-            if(document.getElementById("checkbox_teapot").checked == true && activeModels.indexOf("teapot") == -1)
+            if(document.getElementById("checkbox_teapot").checked == true && elem_spot == -1){
                 activeModels.push("teapot");
-            else
-                delete activeModels[teapot];
+                console.log ("adding teapot");
+            }
+            if(document.getElementById("checkbox_teapot").checked == false && elem_spot != -1){
+                activeModels.splice(elem_spot, 1);
+                console.log ("deleting teapot");
+            }
 
-            if(document.getElementById("checkbox_skull").checked == true && activeModels.indexOf("skull") == -1)
+            //SKULL
+            elem_spot = activeModels.indexOf("skull");
+            if(document.getElementById("checkbox_skull").checked == true && elem_spot == -1){
                 activeModels.push("skull");
-            else
-                delete activeModels["skull"];
+                console.log ("adding skull");
+            }
+            if(document.getElementById("checkbox_skull").checked == false && elem_spot != -1){
+                activeModels.splice(elem_spot, 1);
+                console.log ("deleting skull");
+            }
 
-            if(document.getElementById("checkbox_house").checked == true && activeModels.indexOf("House") == -1)
+            //HOUSE
+            elem_spot = activeModels.indexOf("House");
+            if(document.getElementById("checkbox_house").checked == true && elem_spot == -1){
                 activeModels.push("House");
-            else
-                delete activeModels["House"];
-
+            }
+            if(document.getElementById("checkbox_house").checked == false && elem_spot != -1){
+                activeModels.splice(elem_spot, 1);
+                console.log ("deleting house");
+            }
             console.log ("Num active models: " + activeModels.length);
             for(var i=0; i < activeModels.length; i++)
-                console.log(activeModels[i] + " at index " + i);
-            
+                console.log("\t" + activeModels[i] + " at index " + i);
+            if(activeModels.length == 0)
+                addNewModel();
             return activeModels;
         }
 
@@ -143,7 +164,6 @@ function main(){
         //Returns the renderable for that model if it was successful.
         function getActiveModelPaths(model_name)
         {
-            console.log("getting path for " + model_name);
             var model = new JsonRenderable(gl,program,"./lib/model/"+model_name+"/models/","model.json");
             if (!model){
                 console.log ("No model could be read");
@@ -153,7 +173,6 @@ function main(){
                 return model;
         }
         //if (model) model.delete();
-        ModelFlag = false;
         var currModel = getActiveModels();
         model = new Array();
         console.log("there are currently "+currModel.length+" models in currModels");
@@ -172,7 +191,7 @@ function main(){
             reflectionMatrix.elements = new Float32Array([1,0,0,0, 0,-1,0,0, 0,0,1,0, 0,2*bounds.min[1],0,1]);
         }
         //return a list of all active JSON renderables for Draw.
-        return model[0];
+        return model;
     }
 
   //   function newModel(path)
