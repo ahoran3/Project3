@@ -73,7 +73,6 @@ function main(){
         gl.uniformMatrix4fv(program.uniformLocations["viewT"], false, viewMatrix.elements);
 		
 		gl.depthMask(false);
-		gl.colorMask(false,false,false,false);
 
 		
 		gl.enable(gl.STENCIL_TEST);
@@ -82,22 +81,20 @@ function main(){
 		gl.useProgram(quadProgram);
 		quad.draw();
 
-		gl.depthMask(true);
 		gl.colorMask(true,true,true,true);
 
 		gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
 		gl.stencilFunc(gl.EQUAL, 1, 0xFF);
 
+
+		gl.enable(gl.BLEND);
+		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+		gl.useProgram(quadProgram);
+		quad.draw(0.9);
+		gl.depthMask(true);
 		gl.useProgram(program);
 		for(var i=0;i<model.length;i++)
             model[i].draw(reflectionMatrix);
-
-
-		gl.enable(gl.BLEND);
-		gl.disable(gl.DEPTH_TEST);
-		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		gl.useProgram(quadProgram);
-		//quad.draw(0.5);
 
 		gl.disable(gl.BLEND);
 		gl.disable(gl.STENCIL_TEST);
