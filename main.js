@@ -21,8 +21,7 @@ function main(){
     activeModels.push("floor");
     //activeModels.push("teapot");
     // ... global variables ...
-    var gl, model, camera, program;
-    var quadProgram, quad, reflectionMatrix;
+    var gl, model, camera, program, reflectionMatrix;
     var canvas = null;
     var messageField = null;
 	
@@ -37,10 +36,6 @@ function main(){
         console.log("problem loading the Environment.");
     }
 
-    quadProgram = createQuadProgram(gl);
-    if(quadProgram == null)
-        console.log("problem making the quad program");
-    
     gl.clearColor(0,0,0,1);
     draw();
     return 1;
@@ -266,4 +261,8 @@ function main(){
             imgs[i].src = cubemappath+texturefiles[i];
         }
     }
+}
+
+function addMessage(m){
+		console.log(m);
 }
