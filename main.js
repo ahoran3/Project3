@@ -91,11 +91,14 @@ function main(){
 		
 		gl.depthMask(true);
 		
+        //Was previously using getbounds() for each model, which is extrememly expensive, 
+        //so I modified to store the getbounds from when model was added into the 
+        //activeModels array and have it as a model property now. 
 		for(var i=1;i<model.length;i++)
 		{
             // Q is any point on the mirror plane
 			// N is the normal to the mirror plane
-			var Q= [0,model[i].getBounds().min[1],0,1];
+			var Q= [0,model[i].bounds_min[1],0,1];
 			var N= [0,1,0,0];
 			var L= [lightPosX,lightPosY,lightPosZ,0];
 			reflectionMatrix = computeReflectionMatrix(Q, N);

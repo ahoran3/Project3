@@ -2,6 +2,10 @@
 // CAP 4720 Project 3
 // 26 November 2013
 
+var temp_diag = null;
+var temp_min = null;
+var temp_max = null;
+
 "use strict";
 function parseJSON(jsonFile) {
     var xhttp = new XMLHttpRequest();
@@ -330,6 +334,11 @@ function JsonRenderable(gl, program, model_name, modelfilename) {
         dim.min = [xmin, ymin, zmin];
         dim.max = [xmax, ymax, zmax];
         model.diagonal = Math.sqrt(Math.pow((dim.max[0]-dim.min[0]),2)+Math.pow((dim.max[1]-dim.min[1]),2)+Math.pow((dim.max[2]-dim.min[2]),2));
+        
+        temp_min = dim.min;
+        temp_max = dim.max;
+        temp_diag = model.diagonal;
+
         console.log(model_name + "'s unaltered dimensions are " + dim.min+ ", "+ dim.max);
         console.log(model_name + "'s diagonal is " +model.diagonal);
 
@@ -338,4 +347,7 @@ function JsonRenderable(gl, program, model_name, modelfilename) {
         dim.max = [30, 15,10];
         return dim;
     }
+    this.bounds_diag = temp_diag;
+    this.bounds_min = temp_min;
+    this.bounds_max = temp_max;
 }

@@ -1,6 +1,6 @@
 // Brandon Forster, Matt Hansen, and Alex Horan
 // CAP 4720 Project 3
-// 28 November 2013
+// 26 November 2013
 
 "use strict";
 function createShaderProgram(gl)
