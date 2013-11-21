@@ -17,7 +17,7 @@ var texCubeObj;
 
 function main(){
     //set teapot to default model
-    document.getElementById("checkbox_house").checked = true;
+    //document.getElementById("checkbox_house").checked = true;
     activeModels.push("floor");
     //activeModels.push("teapot");
     // ... global variables ...
@@ -92,14 +92,9 @@ function main(){
 		
 		for(var i=1;i<model.length;i++)
 		{
-			var bounds = model[i].getBounds();
-            camera = new Camera(gl,program,bounds,[0,1,0]);
-            var newEye=camera.getRotatedCameraPosition(angle);
-            gl.uniform3f(program.uniformLocations["eyePosition"],newEye[0],newEye[1],newEye[2]);
-            
             // Q is any point on the mirror plane
 			// N is the normal to the mirror plane
-			var Q= [0,bounds.min[1],0,1];
+			var Q= [0,model[i].getBounds().min[1],0,1];
 			var N= [0,1,0,0];
 			reflectionMatrix = computeReflectionMatrix(Q, N);
             model[i].draw(reflectionMatrix);
@@ -261,7 +256,6 @@ function main(){
                         gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
                     ];
                     gl.bindTexture(gl.TEXTURE_CUBE_MAP, tex);
-                    //gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
                     gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);
                     gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER,gl.LINEAR);
                     gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
