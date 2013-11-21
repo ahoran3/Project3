@@ -21,7 +21,7 @@ function main(){
     activeModels.push("floor");
     //activeModels.push("teapot");
     // ... global variables ...
-    var gl, model, camera, program, reflectionMatrix;
+    var gl, model, camera, program, reflectionMatrix, shadowProjMatrix;
     var canvas = null;
     var messageField = null;
 	
@@ -71,14 +71,12 @@ function main(){
 		
 		//compute a model matrix to translate the floor
 		var floorMMatrix = new Matrix4();
-		var floorOffset= [0,-2,0];
+		var floorOffset= [0,2,0];
 		
 		gl.enable(gl.STENCIL_TEST);
 		gl.stencilOp(gl.REPLACE, gl.REPLACE, gl.REPLACE);
 		gl.stencilFunc(gl.ALWAYS, 1, 0xFF);
 		model[0].draw(floorMMatrix, floorOffset);
-
-		gl.colorMask(true,true,true,true);
 
 		gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
 		gl.stencilFunc(gl.EQUAL, 1, 0xFF);
@@ -96,8 +94,12 @@ function main(){
 			// N is the normal to the mirror plane
 			var Q= [0,model[i].getBounds().min[1],0,1];
 			var N= [0,1,0,0];
+			var L= [1,1,0,0];
 			reflectionMatrix = computeReflectionMatrix(Q, N);
-            model[i].draw(reflectionMatrix);
+			shadowProjMatrix = computeShadowProjectionMatrix(Q,N,L);
+			
+			model[i].draw(reflectionMatrix);
+            model[i].draw(shadowProjMatrix);
 		}
 
 		gl.disable(gl.BLEND);
