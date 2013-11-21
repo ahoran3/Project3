@@ -11,9 +11,9 @@ var rotateFlag = true;
 var dollyRequired = 0;
 var activeModels = new Array();
 var angle = 0;
-var lightPosX= 1;
-var lightPosY= 1;
-var lightPosZ= 1;
+var lightPosX = 1;
+var lightPosY = 1;
+var lightPosZ = 1;
 function toggleRotateFlag(){rotateFlag = !rotateFlag;}
 
 var texCubeObj;
@@ -119,7 +119,12 @@ function main(){
 		
         gl.useProgram(null);
 
-       if (rotateFlag){angle++; if (angle > 360) angle -= 360;}
+        if (rotateFlag)
+        {
+            angle += .2; 
+            if (angle > 360) 
+                angle -= 360;
+        }
        window.requestAnimationFrame(draw);
     }
 

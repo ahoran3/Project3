@@ -27,11 +27,8 @@ Brandon Forster, Matt Hansen, and Alex Horan
 </select> -->
 <br/>Models:
 <input type="checkbox" id="checkbox_teapot" value="teapot" onclick="ModelFlag=true;"/>Teapot
-<input type="checkbox" id="checkbox_skull" value="skull" onclick="ModelFlag=true;"/>Skull
 <input type="checkbox" id="checkbox_house" value="house" onclick="ModelFlag=true;"/>House
 <input type="checkbox" id="checkbox_cube" value="cube" onclick="ModelFlag=true;"/>Cube
-
-<!-- <button type="submit" onclick="ModelFlag=true;">Submit</button> -->
 
 <br/>Environment:<select id="environmentList" onchange="changeEnvironmentFlag=true;">
   <option value="skybox">sky</option>
@@ -42,12 +39,12 @@ Brandon Forster, Matt Hansen, and Alex Horan
 Dolly:<input type='button' value='+' onclick="dollyRequired=1;"/>
 	<input type='button' value='-' onclick="dollyRequired=-1;"/>
 <br>	
-Light Position X:<input type="range" name="lightPosX" value="1" min="-3" max="3" step=".5" onchange="lightPosX= this.value">		
+Light Position X:<input type="range" name="lightPosX" value="1" min="-3" max="3" step=".1" oninput="lightPosX=this.value;">		
 <br>
-Light Position Y:<input type="range" name="lightPosY" value="1" min=".2" max="3" step=".2" onchange="lightPosY= this.value">		
+Light Position Y:<input type="range" name="lightPosY" value="1" min=".2" max="3" step=".1" oninput="lightPosY=this.value;">		
 <br>
-Light Position Z:<input type="range" name="lightPosY" value="1" min="-3" max="3" step=".5" onchange="lightPosZ= this.value">		
+Light Position Z:<input type="range" name="lightPosY" value="1" min="-3" max="3" step=".1" oninput="lightPosZ=this.value;">		
 <br>
-Toggle Rotate: <input type='button' value='Toggle' onclick="toggleRotateFlag();"/>	
+Toggle Draw Cycle: <input type='button' value='Toggle' onclick="toggleRotateFlag();"/>	
 </body>
 </html>
