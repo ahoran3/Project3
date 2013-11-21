@@ -126,28 +126,56 @@ function main(){
         {
             // console.log ("drawing all instances of model type " + model[i][0].name);
             for(var j=0; j<model[i].length;j++)
-            {
-                if(model[i][j].completedPlacementShift == false)
+            {   
+                //Special Case for the house model. Unfortunatley, it is oriented differently.
+                if(model[i][j].name == "house")
                 {
+                    if(model[i][j].completedPlacementShift == false)
+                    {   
 
-                    //offsets the current model by dynamic seperation distance 
-                    // i-1 because the first model (i=1) should start in the middle without modelOffset
-                    console.log("modeloffset0 is: "+  modelOffset[0]);
-                    modelOffset[0] *= i;
-                    console.log("modeloffset1 is: "+  modelOffset[1]);
-                    modelOffset[1] *= i;
-                    console.log("modeloffset2 is: "+  modelOffset[2]);
-                    modelOffset[2] *= j;
-                    console.log("offsetting " + model[i][j].name + " (#" + j + ") by X: " + modelOffset[0] + " Y: " + modelOffset[1] + " Z: " + modelOffset[2]);
-                    model[i][j].draw(null, modelOffset);
-                    model[i][j].completedPlacementShift = true;
-                    modelOffset = [seperationDistance,0,seperationDistance];
+                        //offsets the current model by dynamic seperation distance 
+                        // i-1 because the first model (i=1) should start in the middle without modelOffset
+                        console.log("\tmodeloffset0 is: "+  modelOffset[0]);
+                        modelOffset[0] *= i;
+                        console.log("\tmodeloffset1 is: "+  modelOffset[1]);
+                        modelOffset[1] *= -j;
+                        console.log("\tmodeloffset2 is: "+  modelOffset[2]);
+                        modelOffset[2] *= j;
+                        console.log("offsetting " + model[i][j].name + " (#" + j + ") by X: " + modelOffset[0] + " Y: " + modelOffset[1] + " Z: " + modelOffset[2]);
+                        model[i][j].draw(null, modelOffset);
+                        model[i][j].completedPlacementShift = true;
+                        modelOffset = [seperationDistance, seperationDistance, 0];
+                    }
+                    else  
+                        model[i][j].draw();
                 }
-                else  
-                    model[i][j].draw();
+                //other models are correct
+                else
+                {
+                    if(model[i][j].completedPlacementShift == false)
+                    {
+
+                        //offsets the current model by dynamic seperation distance 
+                        // i-1 because the first model (i=1) should start in the middle without modelOffset
+                        console.log("\tmodeloffset0 is: "+  modelOffset[0]);
+                        modelOffset[0] *= i;
+                        console.log("\tmodeloffset1 is: "+  modelOffset[1]);
+                        modelOffset[1] *= j;
+                        console.log("\tmodeloffset2 is: "+  modelOffset[2]);
+                        modelOffset[2] *= j;
+                        console.log("offsetting " + model[i][j].name + " (#" + j + ") by X: " + modelOffset[0] + " Y: " + modelOffset[1] + " Z: " + modelOffset[2]);
+                        model[i][j].draw(null, modelOffset);
+                        model[i][j].completedPlacementShift = true;
+                        modelOffset = [seperationDistance, 0, seperationDistance];
+                    }
+                    else  
+                        model[i][j].draw();
+                }
+
+                
             }
 
-            gl.useProgram(null);
+            // gl.useProgram(null);
 
             if (rotateFlag)
             {
@@ -249,7 +277,7 @@ function main(){
             if(i>0 && model[i][0].bounds_diag > seperationDistance)
             {
                 seperationDistance = model[i][0].bounds_diag;
-                modelOffset = [seperationDistance, 0, seperationDistance*1.01];
+                modelOffset = [seperationDistance, 0, seperationDistance];
                 console.log("new high seperationDist from " + model[i][0].name +" of: " + seperationDistance);
             }
 

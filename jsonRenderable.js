@@ -2,10 +2,6 @@
 // CAP 4720 Project 3
 // 26 November 2013
 
-var temp_diag = null;
-var temp_min = null;
-var temp_max = null;
-
 "use strict";
 function parseJSON(jsonFile) {
     var xhttp = new XMLHttpRequest();
@@ -15,13 +11,19 @@ function parseJSON(jsonFile) {
     var Doc = xhttp.responseText;
     return JSON.parse(Doc);
 }
-function JsonRenderable(gl, program, model_name, modelfilename) {
+function JsonRenderable(gl, program, model_name, modelfilename, num) {
+
+    var temp_diag = null;
+    var temp_min = null;
+    var temp_max = null;
+
     var model = parseJSON("./lib/model/"+model_name+"/models/" + modelfilename);
     var diffuseTexObjs = loadDiffuseTextures();
     var meshDrawables = loadMeshes(gl.TRIANGLES);
     var nodeTransformations = computeNodeTrasformations();
     this.name = model_name;
-    this.translated = false;
+    this.completedPlacementShift = false;
+    this.howMany = num;
     this.draw = function (mMatrix, T, isShadow) {
         var mM, nM;
         var i, j, nMeshes, node;
@@ -346,10 +348,12 @@ function JsonRenderable(gl, program, model_name, modelfilename) {
         //set constant dimensions for camera 
         dim.min = [-30,-15, -10];
         dim.max = [30, 15,10];
+
+        //allows for inexpensive data look
+        this.bounds_diag = temp_diag;
+        this.bounds_min = temp_min;
+        this.bounds_max = temp_max;
         return dim;
     }
-    //allows for inexpensive data look
-    this.bounds_diag = temp_diag;
-    this.bounds_min = temp_min;
-    this.bounds_max = temp_max;
+
 }
