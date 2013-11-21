@@ -20,6 +20,8 @@ function JsonRenderable(gl, program, model_name, modelfilename) {
     var diffuseTexObjs = loadDiffuseTextures();
     var meshDrawables = loadMeshes(gl.TRIANGLES);
     var nodeTransformations = computeNodeTrasformations();
+    this.name = model_name;
+    this.translated = false;
     this.draw = function (mMatrix, T, isShadow) {
         var mM, nM;
         var i, j, nMeshes, node;
@@ -32,8 +34,8 @@ function JsonRenderable(gl, program, model_name, modelfilename) {
             }
             else nM = nodeTransformations.normalT[i];
 			
-			if (T != null)
-            mM.translate(T[0], T[1], T[2]);
+			if (T!= null)
+                mM.translate(T[0], T[1], T[2]);
 			
             gl.uniformMatrix4fv(program.uniformLocations["modelT"], false, mM.elements);
             gl.uniformMatrix4fv(program.uniformLocations["normalT"], false, nM.elements);
@@ -42,7 +44,7 @@ function JsonRenderable(gl, program, model_name, modelfilename) {
             for (var j = 0; j < nMeshes; j++) {
                 var meshIndex = node.meshIndices[j];
                 var materialIndex = model.meshes[meshIndex].materialIndex;
-				if (isShadow== true)
+				if (isShadow == true)
 					gl.uniform1i(program.uniformLocations["shadow"], 1);
 				else
 					gl.uniform1i(program.uniformLocations["shadow"], 0);
@@ -105,8 +107,7 @@ function JsonRenderable(gl, program, model_name, modelfilename) {
             }
             var nVertices = mesh.vertexPositions.length / 3;
             drawables[index] = new Drawable(
-				attribLocations, attribData, nElements, nVertices, mesh.indices, drawMode
-			);
+				attribLocations, attribData, nElements, nVertices, mesh.indices, drawMode);
         }
         return drawables;
     }
@@ -211,7 +212,7 @@ function JsonRenderable(gl, program, model_name, modelfilename) {
                 //custom translate the objects outside of JSON file -- THIS IS MAKING THE OBJECTS FADE IN AND OUT (Not affecting the floor)
                 // for(var ii = 0; ii < vArrays[i].length; ii++)
                 // {
-                //     vArrays[i][ii] += 60;
+                //     vArrays[i][ii] += sepDist;
                 //     ii++;
                 //     ii++;
                 // }
@@ -339,8 +340,8 @@ function JsonRenderable(gl, program, model_name, modelfilename) {
         temp_max = dim.max;
         temp_diag = model.diagonal;
 
-        // console.log(model_name + "'s unaltered dimensions are " + dim.min+ ", "+ dim.max);
-        // console.log(model_name + "'s diagonal is " +model.diagonal);
+        console.log(model_name + "'s unaltered dimensions are " + dim.min+ ", "+ dim.max);
+        console.log(model_name + "'s diagonal is " +model.diagonal);
 
         //set constant dimensions for camera 
         dim.min = [-30,-15, -10];

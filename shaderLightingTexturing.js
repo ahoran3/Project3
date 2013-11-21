@@ -41,7 +41,7 @@ function createShaderProgram(gl)
 	  '		gl_FragColor = vec4(texColor*diffuseCoeff*costheta,1.0);\n' +
 	  '	}\n'+
 	  '	else {\n' +
-	  '		gl_FragColor = vec4(0.0,0.0,0.0,1.0);\n' +
+	  '		gl_FragColor = vec4(0.0,0.0,0.0,.95);\n' +
 	  '	}\n'+
 	  '}\n';
 	var program = createProgram(gl, VSHADER_SOURCE, FSHADER_SOURCE);

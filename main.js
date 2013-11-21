@@ -13,7 +13,10 @@ var activeModels = new Array();
 var angle = 0;
 var lightPosX = 1;
 var lightPosY = 1;
-var lightPosZ = 1;
+var lightPosZ = 1; 
+var seperationDistance = 0;
+var floorOffset= [0,2,0];
+var modelOffset = null;
 function toggleRotateFlag(){rotateFlag = !rotateFlag;}
 
 var texCubeObj;
@@ -40,9 +43,9 @@ function main(){
     }
 
     gl.clearColor(0,0,0,1);
-    draw();
+    drawScene();
     return 1;
-    function draw(){
+    function drawScene(){
         gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT ); 
 		gl.useProgram(program);
 	
@@ -74,8 +77,7 @@ function main(){
 		
 		//compute a model matrix to translate the floor
 		var floorMMatrix = new Matrix4();
-		var floorOffset= [0,2,0];
-		
+			
 		gl.enable(gl.STENCIL_TEST);
 		gl.stencilOp(gl.REPLACE, gl.REPLACE, gl.REPLACE);
 		gl.stencilFunc(gl.ALWAYS, 1, 0xFF);
@@ -86,27 +88,25 @@ function main(){
 
 		gl.enable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-		
+
 		model[0].draw(floorMMatrix, floorOffset); //TODO draw with alpha
 		
 		gl.depthMask(true);
 		
-        //Was previously using getbounds() for each model, which is extrememly expensive, 
-        //so I modified to store the getbounds from when model was added into the 
-        //activeModels array and have it as a model property now. 
-		for(var i=1;i<model.length;i++)
+        //Draw Shadow and Reflection objects
+        for(var i=1;i<model.length;i++)
 		{
             // Q is any point on the mirror plane
-			// N is the normal to the mirror plane
-			var Q= [0,model[i].bounds_min[1],0,1];
-			var N= [0,1,0,0];
-			var L= [lightPosX,lightPosY,lightPosZ,0];
-			reflectionMatrix = computeReflectionMatrix(Q, N);
-			shadowProjMatrix = computeShadowProjectionMatrix(Q,N,L);
-			
-			model[i].draw(reflectionMatrix);
+            // N is the normal to the mirror plane
+            var Q = [0,model[i].bounds_min[1],0,1];
+            var N = [0,1,0,0];
+            var L = [lightPosX,lightPosY,lightPosZ,0];
+            reflectionMatrix = computeReflectionMatrix(Q, N);
+            shadowProjMatrix = computeShadowProjectionMatrix(Q,N,L);
+
+            model[i].draw(reflectionMatrix);
             model[i].draw(shadowProjMatrix, null, true);
-		}
+        }
 
 		gl.disable(gl.BLEND);
 		gl.disable(gl.STENCIL_TEST);
@@ -114,9 +114,19 @@ function main(){
 
 		gl.useProgram(program);
         
+        //Draw real objects
         for(var i=1;i<model.length;i++)
-            model[i].draw();
-		
+            if(model[i].translated == false)
+            {
+                modelOffset[0] *= i;
+                modelOffset[1] *= i;
+                modelOffset[2] *= i;
+                model[i].draw(null, modelOffset);
+                model[i].translated = true;
+            }
+            else
+                model[i].draw();
+
         gl.useProgram(null);
 
         if (rotateFlag)
@@ -125,7 +135,7 @@ function main(){
             if (angle > 360) 
                 angle -= 360;
         }
-       window.requestAnimationFrame(draw);
+       window.requestAnimationFrame(drawScene);
     }
 
     //function looks through possible models and decides which ones need to be rendered on the canvas. 
@@ -135,6 +145,7 @@ function main(){
         //decides which models to put in the Active models array
         function getActiveModels()
         {
+            //TEAPOT
             var elem_spot = activeModels.indexOf("teapot");
             //if model is checked and it does not already exist in the active models list, add it.
             if(document.getElementById("checkbox_teapot").checked == true && elem_spot == -1){
@@ -178,7 +189,8 @@ function main(){
         //Returns the renderable for that model if it was successful.
         function getActiveModelPaths(model_name)
         {
-            var model = new JsonRenderable(gl,program, model_name,"model.json");
+            // var model = new JsonRenderable(gl,program, model_name,"model.json");
+            var model = new JsonRenderable(gl, program, model_name, "model.json", seperationDistance);
             if (!model){
                 console.log ("No model could be read");
                 return;
@@ -196,6 +208,16 @@ function main(){
             model.push(getActiveModelPaths(currModel[i]));
 
             var bounds = model[i].getBounds();
+            
+            //determine largest models diameter so that
+            //we can place models without them overlapping. 
+            if(model[i].bounds_diag > seperationDistance)
+            {
+                seperationDistance = model[i].bounds_diag;
+                modelOffset = [seperationDistance/10,0,0];
+            }
+            console.log ("seperation dist :" + seperationDistance);
+
             camera = new Camera(gl,program,bounds,[0,1,0]);
             var newEye=camera.getRotatedCameraPosition(angle);
             gl.uniform3f(program.uniformLocations["eyePosition"],newEye[0],newEye[1],newEye[2]);
@@ -272,7 +294,7 @@ function main(){
     }
 	// Q is any point on the mirror plane
 	// N is the normal to the mirror plane
-	function computeReflectionMatrix(Q, N)
+	function computeReflectionMatrix(Q, N, sepDist)
 	{
 		var NdotQ = N[0]*Q[0]+N[1]*Q[1]+N[2]*Q[2];
 		
@@ -289,7 +311,7 @@ function main(){
 	// Q is a known point on the plane on which shadow will be cast
 	// N is the normal to the plane
 	// L is a 4 element array representing the light source, whose 4th element is 1 if the light source is a point source and 0 if the light source is a directional source.
-	function computeShadowProjectionMatrix(Q,N,L)
+	function computeShadowProjectionMatrix(Q,N,L,sepDist)
 	{
 		var NdotQ = N[0]*Q[0]+N[1]*Q[1]+N[2]*Q[2];
 		var NdotL = N[0]*L[0]+N[1]*L[1]+N[2]*L[2];
@@ -310,6 +332,20 @@ function main(){
 		}
 		return shadowMatrix;
 	}
+
+        // Q is any point on the mirror plane
+    // N is the normal to the mirror plane
+    // function computePositionMatrix(seperationDistance)
+    // {
+    //    var PositionMatrix.elements = [
+    //     1,0,0,0,
+    //     0,1,0,0,
+    //     0,0,1,0,
+    //     0,0,0,1
+    //     ]
+            
+    //     return PositionMatrix;
+    // }
 }
 
 function addMessage(m){

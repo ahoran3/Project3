@@ -14,6 +14,7 @@
 <script src="main.js"></script>
 <script src="shaderLightingTexturing.js"></script>
 <script src="jsonRenderable.js"></script>
+<script src="scene.js"></script>
 <script src="camera.js"></script>
 </head>
 <body onload="main();">
@@ -45,6 +46,6 @@ Light Position Y:<input type="range" name="lightPosY" value="1" min=".2" max="3"
 <br>
 Light Position Z:<input type="range" name="lightPosY" value="1" min="-3" max="3" step=".1" oninput="lightPosZ=this.value;">		
 <br>
-Toggle Draw Cycle: <input type='button' value='Toggle' onclick="toggleRotateFlag();"/>	
+Toggle Rotate: <input type='button' value='Toggle' onclick="toggleRotateFlag();"/>	
 </body>
 </html>
