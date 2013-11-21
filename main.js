@@ -11,6 +11,9 @@ var rotateFlag = true;
 var dollyRequired = 0;
 var activeModels = new Array();
 var angle = 0;
+var lightPosX= 1;
+var lightPosY= 1;
+var lightPosZ= 1;
 function toggleRotateFlag(){rotateFlag = !rotateFlag;}
 
 var texCubeObj;
@@ -94,7 +97,7 @@ function main(){
 			// N is the normal to the mirror plane
 			var Q= [0,model[i].getBounds().min[1],0,1];
 			var N= [0,1,0,0];
-			var L= [1,1,0,0];
+			var L= [lightPosX,lightPosY,lightPosZ,0];
 			reflectionMatrix = computeReflectionMatrix(Q, N);
 			shadowProjMatrix = computeShadowProjectionMatrix(Q,N,L);
 			
