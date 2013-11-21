@@ -102,7 +102,7 @@ function main(){
 			shadowProjMatrix = computeShadowProjectionMatrix(Q,N,L);
 			
 			model[i].draw(reflectionMatrix);
-            model[i].draw(shadowProjMatrix);
+            model[i].draw(shadowProjMatrix, null, true);
 		}
 
 		gl.disable(gl.BLEND);

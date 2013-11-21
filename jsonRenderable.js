@@ -16,7 +16,7 @@ function JsonRenderable(gl, program, model_name, modelfilename) {
     var diffuseTexObjs = loadDiffuseTextures();
     var meshDrawables = loadMeshes(gl.TRIANGLES);
     var nodeTransformations = computeNodeTrasformations();
-    this.draw = function (mMatrix, T) {
+    this.draw = function (mMatrix, T, isShadow) {
         var mM, nM;
         var i, j, nMeshes, node;
         var nNodes = model.nodes.length;
@@ -38,6 +38,11 @@ function JsonRenderable(gl, program, model_name, modelfilename) {
             for (var j = 0; j < nMeshes; j++) {
                 var meshIndex = node.meshIndices[j];
                 var materialIndex = model.meshes[meshIndex].materialIndex;
+				if (isShadow== true)
+					gl.uniform1i(program.uniformLocations["shadow"], 1);
+				else
+					gl.uniform1i(program.uniformLocations["shadow"], 0);
+					
                 if(model.materials)
                 {
                     var r = model.materials[materialIndex].diffuseReflectance;
