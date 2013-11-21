@@ -69,10 +69,14 @@ function main(){
 		
 		gl.depthMask(false);
 		
+		//compute a model matrix to translate the floor
+		var floorMMatrix = new Matrix4();
+		var floorOffset= [0,-2,0];
+		
 		gl.enable(gl.STENCIL_TEST);
 		gl.stencilOp(gl.REPLACE, gl.REPLACE, gl.REPLACE);
 		gl.stencilFunc(gl.ALWAYS, 1, 0xFF);
-		model[0].draw();
+		model[0].draw(floorMMatrix, floorOffset);
 
 		gl.colorMask(true,true,true,true);
 
@@ -82,12 +86,24 @@ function main(){
 		gl.enable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 		
-		model[0].draw(); //TODO draw with alpha
+		model[0].draw(floorMMatrix, floorOffset); //TODO draw with alpha
 		
 		gl.depthMask(true);
 		
 		for(var i=1;i<model.length;i++)
+		{
+			var bounds = model[i].getBounds();
+            camera = new Camera(gl,program,bounds,[0,1,0]);
+            var newEye=camera.getRotatedCameraPosition(angle);
+            gl.uniform3f(program.uniformLocations["eyePosition"],newEye[0],newEye[1],newEye[2]);
+            
+            // Q is any point on the mirror plane
+			// N is the normal to the mirror plane
+			var Q= [0,bounds.min[1],0,1];
+			var N= [0,1,0,0];
+			reflectionMatrix = computeReflectionMatrix(Q, N);
             model[i].draw(reflectionMatrix);
+		}
 
 		gl.disable(gl.BLEND);
 		gl.disable(gl.STENCIL_TEST);
@@ -186,12 +202,6 @@ function main(){
             camera = new Camera(gl,program,bounds,[0,1,0]);
             var newEye=camera.getRotatedCameraPosition(angle);
             gl.uniform3f(program.uniformLocations["eyePosition"],newEye[0],newEye[1],newEye[2]);
-            
-            // Q is any point on the mirror plane
-			// N is the normal to the mirror plane
-			var Q= [0,bounds.min[1],0,1];
-			var N= [0,1,0,0]
-			reflectionMatrix = computeReflectionMatrix(Q, N);
         }
         //return a list of all active JSON renderables for Draw.
         return model;
