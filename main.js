@@ -17,11 +17,11 @@ var texCubeObj;
 
 function main(){
     //set teapot to default model
-    document.getElementById("checkbox_house").checked = true;
+    //document.getElementById("checkbox_house").checked = true;
     activeModels.push("floor");
     //activeModels.push("teapot");
     // ... global variables ...
-    var gl, model, camera, program, reflectionMatrix;
+    var gl, model, camera, program, reflectionMatrix, shadowProjMatrix;
     var canvas = null;
     var messageField = null;
 	
@@ -69,12 +69,14 @@ function main(){
 		
 		gl.depthMask(false);
 		
+		//compute a model matrix to translate the floor
+		var floorMMatrix = new Matrix4();
+		var floorOffset= [0,2,0];
+		
 		gl.enable(gl.STENCIL_TEST);
 		gl.stencilOp(gl.REPLACE, gl.REPLACE, gl.REPLACE);
 		gl.stencilFunc(gl.ALWAYS, 1, 0xFF);
-		model[0].draw();
-
-		gl.colorMask(true,true,true,true);
+		model[0].draw(floorMMatrix, floorOffset);
 
 		gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
 		gl.stencilFunc(gl.EQUAL, 1, 0xFF);
@@ -82,12 +84,23 @@ function main(){
 		gl.enable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 		
-		model[0].draw(); //TODO draw with alpha
+		model[0].draw(floorMMatrix, floorOffset); //TODO draw with alpha
 		
 		gl.depthMask(true);
 		
 		for(var i=1;i<model.length;i++)
-            model[i].draw(reflectionMatrix);
+		{
+            // Q is any point on the mirror plane
+			// N is the normal to the mirror plane
+			var Q= [0,model[i].getBounds().min[1],0,1];
+			var N= [0,1,0,0];
+			var L= [1,1,0,0];
+			reflectionMatrix = computeReflectionMatrix(Q, N);
+			shadowProjMatrix = computeShadowProjectionMatrix(Q,N,L);
+			
+			model[i].draw(reflectionMatrix);
+            model[i].draw(shadowProjMatrix);
+		}
 
 		gl.disable(gl.BLEND);
 		gl.disable(gl.STENCIL_TEST);
@@ -186,9 +199,6 @@ function main(){
             camera = new Camera(gl,program,bounds,[0,1,0]);
             var newEye=camera.getRotatedCameraPosition(angle);
             gl.uniform3f(program.uniformLocations["eyePosition"],newEye[0],newEye[1],newEye[2]);
-            
-            reflectionMatrix = new Matrix4();
-            reflectionMatrix.elements = new Float32Array([1,0,0,0, 0,-1,0,0, 0,0,1,0, 0,2*bounds.min[1],0,1]);
         }
         //return a list of all active JSON renderables for Draw.
         return model;
@@ -248,7 +258,6 @@ function main(){
                         gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
                     ];
                     gl.bindTexture(gl.TEXTURE_CUBE_MAP, tex);
-                    //gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
                     gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);
                     gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER,gl.LINEAR);
                     gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
@@ -261,6 +270,46 @@ function main(){
             imgs[i].src = cubemappath+texturefiles[i];
         }
     }
+	// Q is any point on the mirror plane
+	// N is the normal to the mirror plane
+	function computeReflectionMatrix(Q, N)
+	{
+		var NdotQ = N[0]*Q[0]+N[1]*Q[1]+N[2]*Q[2];
+		
+		var reflectionMatrix = new Matrix4();
+		reflectionMatrix.elements = new Float32Array([
+			1-2*N[0]*N[0],	-2*N[1]*N[0],	-2*N[2]*N[0],	0,
+			-2*N[0]*N[1],	1-2*N[1]*N[1],	-2*N[2]*N[1],	0,
+			-2*N[0]*N[2],	-2*N[1]*N[2],	1-2*N[2]*N[2],	0,
+			2*NdotQ*N[0],	2*NdotQ*N[1],	2*NdotQ*N[2],	1 ]);
+			
+		return reflectionMatrix;
+	}
+
+	// Q is a known point on the plane on which shadow will be cast
+	// N is the normal to the plane
+	// L is a 4 element array representing the light source, whose 4th element is 1 if the light source is a point source and 0 if the light source is a directional source.
+	function computeShadowProjectionMatrix(Q,N,L)
+	{
+		var NdotQ = N[0]*Q[0]+N[1]*Q[1]+N[2]*Q[2];
+		var NdotL = N[0]*L[0]+N[1]*L[1]+N[2]*L[2];
+		var D = NdotL-((L[3]>0)?NdotQ:0);
+		var shadowMatrix = new Matrix4();
+		shadowMatrix.elements = [
+			D-N[0]*L[0],	-N[0]*L[1],		-N[0]*L[2], 	-N[0]*L[3], 
+			-N[1]*L[0], 	D-N[1]*L[1],	-N[1]*L[2], 	-N[1]*L[3],
+			-N[2]*L[0],		-N[2]*L[1], 	D-N[2]*L[2], 	-N[2]*L[3],
+			NdotQ*L[0], 	NdotQ*L[1], 	NdotQ*L[2], 	NdotL
+			];
+		if (shadowMatrix.elements[15] < 0)
+		{
+			for(var i=0; i<16;i++)
+			{
+				shadowMatrix.elements[i] = -shadowMatrix.elements[i];
+			}
+		}
+		return shadowMatrix;
+	}
 }
 
 function addMessage(m){

@@ -16,7 +16,7 @@ function JsonRenderable(gl, program, model_name, modelfilename) {
     var diffuseTexObjs = loadDiffuseTextures();
     var meshDrawables = loadMeshes(gl.TRIANGLES);
     var nodeTransformations = computeNodeTrasformations();
-    this.draw = function (mMatrix) {
+    this.draw = function (mMatrix, T) {
         var mM, nM;
         var i, j, nMeshes, node;
         var nNodes = model.nodes.length;
@@ -27,10 +27,12 @@ function JsonRenderable(gl, program, model_name, modelfilename) {
                 nM.elements[12] = 0; nM.elements[13] = 0; nM.elements[14] = 0;
             }
             else nM = nodeTransformations.normalT[i];
+			
+			if (T != null)
+            mM.translate(T[0], T[1], T[2]);
+			
             gl.uniformMatrix4fv(program.uniformLocations["modelT"], false, mM.elements);
             gl.uniformMatrix4fv(program.uniformLocations["normalT"], false, nM.elements);
-            gl.uniformMatrix4fv(program.uniformLocations["ITmodelT"], false, new Matrix4(mM).invert().transpose().elements);
-
             node = model.nodes[i];
             nMeshes = node.meshIndices.length;
             for (var j = 0; j < nMeshes; j++) {
