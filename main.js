@@ -46,6 +46,7 @@ function main(){
     drawScene();
     return 1;
     function drawScene(){
+        // console.log ("draw function");
         gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT ); 
 		gl.useProgram(program);
 	
@@ -54,6 +55,7 @@ function main(){
             console.log("model flag triggered!\n");
             model = addNewModel();
             ModelFlag = false;
+            console.log("gettingout of addmodel");
 		}    
 
         if (changeEnvironmentFlag)
@@ -77,11 +79,11 @@ function main(){
 		
 		//compute a model matrix to translate the floor
 		var floorMMatrix = new Matrix4();
-			
+		// console.log("setting up stenciling");
 		gl.enable(gl.STENCIL_TEST);
 		gl.stencilOp(gl.REPLACE, gl.REPLACE, gl.REPLACE);
 		gl.stencilFunc(gl.ALWAYS, 1, 0xFF);
-		model[0].draw(floorMMatrix, floorOffset);
+		model[0][0].draw(floorMMatrix, floorOffset);
 
 		gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
 		gl.stencilFunc(gl.EQUAL, 1, 0xFF);
@@ -89,53 +91,73 @@ function main(){
 		gl.enable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-		model[0].draw(floorMMatrix, floorOffset); //TODO draw with alpha
+		model[0][0].draw(floorMMatrix, floorOffset); //TODO draw with alpha
 		
 		gl.depthMask(true);
+        // console.log("setting up shadowing");
 		
         //Draw Shadow and Reflection objects
-        for(var i=1;i<model.length;i++)
+        for(var i=1; i<model.length; i++)
 		{
-            // Q is any point on the mirror plane
-            // N is the normal to the mirror plane
-            var Q = [0,model[i].bounds_min[1],0,1];
-            var N = [0,1,0,0];
-            var L = [lightPosX,lightPosY,lightPosZ,0];
-            reflectionMatrix = computeReflectionMatrix(Q, N);
-            shadowProjMatrix = computeShadowProjectionMatrix(Q,N,L);
+            for(var j=0; j<model[i].length; j++)
+            {
+                // console.log("in shadowing");
+                // Q is any point on the mirror plane
+                // N is the normal to the mirror plane
+                var Q = [0,model[i][0].bounds_min[1],0,1];
+                var N = [0,1,0,0];
+                var L = [lightPosX,lightPosY,lightPosZ,0];
+                reflectionMatrix = computeReflectionMatrix(Q, N);
+                shadowProjMatrix = computeShadowProjectionMatrix(Q,N,L);
 
-            model[i].draw(reflectionMatrix);
-            model[i].draw(shadowProjMatrix, null, true);
+                model[i][0].draw(reflectionMatrix);
+                model[i][0].draw(shadowProjMatrix, null, true);
+            }
         }
-
 		gl.disable(gl.BLEND);
 		gl.disable(gl.STENCIL_TEST);
 		gl.enable(gl.DEPTH_TEST);
 
 		gl.useProgram(program);
         
+        // console.log("about to draw "+ model.length +" real objs");
         //Draw real objects
-        for(var i=1;i<model.length;i++)
-            if(model[i].translated == false)
-            {
-                modelOffset[0] *= i;
-                modelOffset[1] *= i;
-                modelOffset[2] *= i;
-                model[i].draw(null, modelOffset);
-                model[i].translated = true;
-            }
-            else
-                model[i].draw();
-
-        gl.useProgram(null);
-
-        if (rotateFlag)
+        for(var i=1; i<model.length; i++)
         {
-            angle += .2; 
-            if (angle > 360) 
-                angle -= 360;
+            // console.log ("drawing all instances of model type " + model[i][0].name);
+            for(var j=0; j<model[i].length;j++)
+            {
+                if(model[i][j].completedPlacementShift == false)
+                {
+
+                    //offsets the current model by dynamic seperation distance 
+                    // i-1 because the first model (i=1) should start in the middle without modelOffset
+                    console.log("modeloffset0 is: "+  modelOffset[0]);
+                    modelOffset[0] *= i;
+                    console.log("modeloffset1 is: "+  modelOffset[1]);
+                    modelOffset[1] *= i;
+                    console.log("modeloffset2 is: "+  modelOffset[2]);
+                    modelOffset[2] *= j;
+                    console.log("offsetting " + model[i][j].name + " (#" + j + ") by X: " + modelOffset[0] + " Y: " + modelOffset[1] + " Z: " + modelOffset[2]);
+                    model[i][j].draw(null, modelOffset);
+                    model[i][j].completedPlacementShift = true;
+                    modelOffset = [seperationDistance,0,seperationDistance];
+                }
+                else  
+                    model[i][j].draw();
+            }
+
+            gl.useProgram(null);
+
+            if (rotateFlag)
+            {
+                angle += .2; 
+                if (angle > 360) 
+                    angle -= 360;
+            }
         }
-       window.requestAnimationFrame(drawScene);
+        // drawScene();
+        window.requestAnimationFrame(drawScene);
     }
 
     //function looks through possible models and decides which ones need to be rendered on the canvas. 
@@ -187,16 +209,19 @@ function main(){
 
         //puts a the current model name with the path and generates a Json Renderable
         //Returns the renderable for that model if it was successful.
-        function getActiveModelPaths(model_name)
+        function create2DrenderableList(model_name,numInstances)
         {
-            // var model = new JsonRenderable(gl,program, model_name,"model.json");
-            var model = new JsonRenderable(gl, program, model_name, "model.json", seperationDistance);
-            if (!model){
+            var model_Instance = new Array();
+            for(var i=0; i<numInstances; i++){
+                // var model = new JsonRenderable(gl,program, model_name,"model.json");
+                model_Instance[i] = new JsonRenderable(gl, program, model_name, "model.json");
+            }
+            if (!model_Instance){
                 console.log ("No model could be read");
                 return;
             }
             else
-                return model;
+                return model_Instance;
         }
 
         var currModel = getActiveModels();
@@ -204,25 +229,35 @@ function main(){
 
         //loops through all active models
         for(var i=0; i < currModel.length; i++)
-        {
-            model.push(getActiveModelPaths(currModel[i]));
+        {          
+            //Model is a 2d array of model[modeltype][modelinstance]
+            if(i==0){ //floor
+                model.push(create2DrenderableList(currModel[i],1));
+            }
+            else //models that are not the floor
+                model.push(create2DrenderableList(currModel[i],3));
 
-            var bounds = model[i].getBounds();
+            var bounds = model[i][0].getBounds();
+            
+            console.log("\t (" + model[i].length + ") " + model[i][0].name + " at model index " + i);
+
+            console.log (model[i][0].name + "'s seperation dist :" + model[i][0].bounds_diag);
             
             //determine largest models diameter so that
             //we can place models without them overlapping. 
-            if(model[i].bounds_diag > seperationDistance)
+            //i>0 because we dont want to consider floor's seperationDistance
+            if(i>0 && model[i][0].bounds_diag > seperationDistance)
             {
-                seperationDistance = model[i].bounds_diag;
-                modelOffset = [seperationDistance/10,0,0];
+                seperationDistance = model[i][0].bounds_diag;
+                modelOffset = [seperationDistance, 0, seperationDistance*1.01];
+                console.log("new high seperationDist from " + model[i][0].name +" of: " + seperationDistance);
             }
-            console.log ("seperation dist :" + seperationDistance);
 
             camera = new Camera(gl,program,bounds,[0,1,0]);
             var newEye=camera.getRotatedCameraPosition(angle);
-            gl.uniform3f(program.uniformLocations["eyePosition"],newEye[0],newEye[1],newEye[2]);
+            gl.uniform3f(program.uniformLocations["eyePosition"], newEye[0], newEye[1], newEye[2]);
         }
-        //return a list of all active JSON renderables for Draw.
+        //return a 2D list of all active JSON renderables for Draw.
         return model;
     }
 
@@ -334,7 +369,7 @@ function main(){
 	}
 
         // Q is any point on the mirror plane
-    // N is the normal to the mirror plane
+    //N is the normal to the mirror plane
     // function computePositionMatrix(seperationDistance)
     // {
     //    var PositionMatrix.elements = [
