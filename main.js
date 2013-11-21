@@ -146,17 +146,6 @@ function main(){
                 console.log ("deleting teapot");
             }
 
-            //SKULL
-            elem_spot = activeModels.indexOf("skull");
-            if(document.getElementById("checkbox_skull").checked == true && elem_spot == -1){
-                activeModels.push("skull");
-                console.log ("adding skull");
-            }
-            if(document.getElementById("checkbox_skull").checked == false && elem_spot != -1){
-                activeModels.splice(elem_spot, 1);
-                console.log ("deleting skull");
-            }
-
             //HOUSE
             elem_spot = activeModels.indexOf("house");
             if(document.getElementById("checkbox_house").checked == true && elem_spot == -1){
