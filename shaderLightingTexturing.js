@@ -34,19 +34,23 @@ function createShaderProgram(gl)
 	  'void main() {\n' +
 	  '	 vec4 texColor;\n' +
 	  '	 vec3 refColor;\n' +
+	  //'	 vec3 emission = uEmissionColor;\n' +
+	  //'	 vec3 ambience = uAmbientReflectance * uSceneAmbient;\n' + 
 	  '	 float costheta = 1.0;\n'+
 	  '   vec3 viewDir = normalize(fragViewDir);\n'+
 	  '	 vec3 normal = normalize(fragNormal);\n' +
 	  '	 vec3 reflectDirection = reflect(viewDir,normal);\n' + 
-	  '   if (drawType == 2){\n'+
+	  //'	 vec3 tColor = vec3(emission + ambience + diffuse + specular);\n' +
+	  //'	 tColor = vec3(emission + ambience + spotDifference * (diffuse));\n' +
+	  '   if (drawType == 2){\n'+ //texture
 	  '	 	texColor = texture2D(diffuseTex, vec2(tCoord.s, tCoord.t));\n' +
 	  '	 	gl_FragColor = vec4(texColor.rgb*diffuseCoeff*costheta,1.0);\n' +
 	  '	 }\n'+
-	  '   if (drawType == 1){\n'+
+	  '   if (drawType == 1){\n'+	//reflection
 	  '	 	refColor = textureCube(cubeTex, reflectDirection).rgb;\n' +
 	  ' 		gl_FragColor = vec4(refColor*diffuseCoeff*costheta,1.0);\n' +
 	  '	 }\n'+
-	  '	 else {\n' +
+	  '	 else {\n' + //shadow
 	  '		gl_FragColor = vec4(0.0,0.0,0.0,.95);\n' +
 	  '	 }\n'+
 	  '}\n';

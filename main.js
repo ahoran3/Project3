@@ -83,7 +83,7 @@ function main(){
 		gl.enable(gl.STENCIL_TEST);
 		gl.stencilOp(gl.REPLACE, gl.REPLACE, gl.REPLACE);
 		gl.stencilFunc(gl.ALWAYS, 1, 0xFF);
-		model[0][0].draw(floorMMatrix, floorOffset);
+		model[0][0].draw(floorMMatrix, floorOffset, 1);
 
 		gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
 		gl.stencilFunc(gl.EQUAL, 1, 0xFF);
@@ -91,7 +91,7 @@ function main(){
 		gl.enable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-		model[0][0].draw(floorMMatrix, floorOffset); //TODO draw with alpha
+		model[0][0].draw(floorMMatrix, floorOffset, 1); //TODO draw with alpha
 		
 		gl.depthMask(true);
         // console.log("setting up shadowing");
@@ -109,10 +109,9 @@ function main(){
                 var L = [lightPosX,lightPosY,lightPosZ,0];
                 reflectionMatrix = computeReflectionMatrix(Q, N);
                 shadowProjMatrix = computeShadowProjectionMatrix(Q,N,L);
-                //1=reflect
-                model[i][j].draw(reflectionMatrix, null, 1);
-                //0=shadow
-                model[i][j].draw(shadowProjMatrix, null, 0);
+
+                model[i][j].draw(reflectionMatrix, null, 1); //1=reflection
+                model[i][j].draw(shadowProjMatrix, null, 0); //0=shadow
             }
         }
 		gl.disable(gl.BLEND);
@@ -140,12 +139,12 @@ function main(){
                         modelOffset[1] *= -j;
                         modelOffset[2] *= j;
                         console.log("offsetting " + model[i][j].name + " (#" + j + ") by X: " + modelOffset[0] + " Y: " + modelOffset[1] + " Z: " + modelOffset[2]);
-                        model[i][j].draw(null, modelOffset, 2);
+                        model[i][j].draw(null, modelOffset, 2); //2=texture
                         model[i][j].completedPlacementShift = true;
                         modelOffset = [seperationDistance, seperationDistance, 0];
                     }
                     else  
-                        model[i][j].draw();
+                        model[i][j].draw(null, null, 2); //2=texture
                 }
                 //other models are correct
                 else
@@ -159,12 +158,12 @@ function main(){
                         modelOffset[1] *= j;
                         modelOffset[2] *= j;
                         console.log("offsetting " + model[i][j].name + " (#" + j + ") by X: " + modelOffset[0] + " Y: " + modelOffset[1] + " Z: " + modelOffset[2]);
-                        model[i][j].draw(null, modelOffset, 2);     //2=texture
+                        model[i][j].draw(null, modelOffset, 2); //2=texture
                         model[i][j].completedPlacementShift = true;
                         modelOffset = [seperationDistance, 0, seperationDistance];
                     }
                     else  
-                        model[i][j].draw(null, null, 2);    //2=texture
+                        model[i][j].draw(null, null, 2); //2=texture
                 }
 
                 

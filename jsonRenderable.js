@@ -28,6 +28,8 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
         var mM, nM;
         var i, j, nMeshes, node;
         var nNodes = model.nodes.length;
+        // console.log(model_name + "'s drawy type is: " +  drawType);
+
         for (var i = 0; i < nNodes; i++) {
             mM = (mMatrix) ? (new Matrix4(mMatrix).multiply(nodeTransformations.modelT[i])) : nodeTransformations.modelT[i];
             if (mMatrix) {
@@ -43,16 +45,18 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
             gl.uniformMatrix4fv(program.uniformLocations["normalT"], false, nM.elements);
             node = model.nodes[i];
             nMeshes = node.meshIndices.length;
+
             for (var j = 0; j < nMeshes; j++) {
                 var meshIndex = node.meshIndices[j];
                 var materialIndex = model.meshes[meshIndex].materialIndex;
 				if (drawType == 0)
-					gl.uniform1i(program.uniformLocations["drawType"], 1);
-				else if (drawType == 1)
 					gl.uniform1i(program.uniformLocations["drawType"], 0);
-                else
+				else if (drawType == 1)
+					gl.uniform1i(program.uniformLocations["drawType"], 1);
+                else if (drawType == 2)
                     gl.uniform1i(program.uniformLocations["drawType"], 2);
-                
+                else
+                    console.log("unknown drawType");
                 if(model.materials)
                 {
                     var r = model.materials[materialIndex].diffuseReflectance;
@@ -85,7 +89,7 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
             // Compute normal transformation matrix
             normalTransformations[i] = modelMatrixToNormalMatrix(m);
         }
-        return { modelT: modelTransformations, normalT: normalTransformations };
+        return {modelT: modelTransformations, normalT: normalTransformations};
     }
     function loadMeshes(drawMode) {
         // Create drawable for every mesh
@@ -196,8 +200,6 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
             return texObjs;
         }
     }
-
-
 
     function Drawable(attribLocations, vArrays, nElements, nVertices, indexArray, drawMode) {
         // Create a buffer object
