@@ -109,9 +109,10 @@ function main(){
                 var L = [lightPosX,lightPosY,lightPosZ,0];
                 reflectionMatrix = computeReflectionMatrix(Q, N);
                 shadowProjMatrix = computeShadowProjectionMatrix(Q,N,L);
-
-                model[i][j].draw(reflectionMatrix);
-                model[i][j].draw(shadowProjMatrix, null, true);
+                //1=reflect
+                model[i][j].draw(reflectionMatrix, null, 1);
+                //0=shadow
+                model[i][j].draw(shadowProjMatrix, null, 0);
             }
         }
 		gl.disable(gl.BLEND);
@@ -135,14 +136,11 @@ function main(){
 
                         //offsets the current model by dynamic seperation distance 
                         // i-1 because the first model (i=1) should start in the middle without modelOffset
-                        console.log("\tmodeloffset0 is: "+  modelOffset[0]);
                         modelOffset[0] *= i;
-                        console.log("\tmodeloffset1 is: "+  modelOffset[1]);
                         modelOffset[1] *= -j;
-                        console.log("\tmodeloffset2 is: "+  modelOffset[2]);
                         modelOffset[2] *= j;
                         console.log("offsetting " + model[i][j].name + " (#" + j + ") by X: " + modelOffset[0] + " Y: " + modelOffset[1] + " Z: " + modelOffset[2]);
-                        model[i][j].draw(null, modelOffset);
+                        model[i][j].draw(null, modelOffset, 2);
                         model[i][j].completedPlacementShift = true;
                         modelOffset = [seperationDistance, seperationDistance, 0];
                     }
@@ -157,19 +155,16 @@ function main(){
 
                         //offsets the current model by dynamic seperation distance 
                         // i-1 because the first model (i=1) should start in the middle without modelOffset
-                        console.log("\tmodeloffset0 is: "+  modelOffset[0]);
                         modelOffset[0] *= i;
-                        console.log("\tmodeloffset1 is: "+  modelOffset[1]);
                         modelOffset[1] *= j;
-                        console.log("\tmodeloffset2 is: "+  modelOffset[2]);
                         modelOffset[2] *= j;
                         console.log("offsetting " + model[i][j].name + " (#" + j + ") by X: " + modelOffset[0] + " Y: " + modelOffset[1] + " Z: " + modelOffset[2]);
-                        model[i][j].draw(null, modelOffset);
+                        model[i][j].draw(null, modelOffset, 2);     //2=texture
                         model[i][j].completedPlacementShift = true;
                         modelOffset = [seperationDistance, 0, seperationDistance];
                     }
                     else  
-                        model[i][j].draw();
+                        model[i][j].draw(null, null, 2);    //2=texture
                 }
 
                 

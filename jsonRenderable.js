@@ -24,7 +24,7 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
     this.name = model_name;
     this.completedPlacementShift = false;
     this.howMany = num;
-    this.draw = function (mMatrix, T, isShadow) {
+    this.draw = function (mMatrix, T, drawType) {
         var mM, nM;
         var i, j, nMeshes, node;
         var nNodes = model.nodes.length;
@@ -46,11 +46,13 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
             for (var j = 0; j < nMeshes; j++) {
                 var meshIndex = node.meshIndices[j];
                 var materialIndex = model.meshes[meshIndex].materialIndex;
-				if (isShadow == true)
-					gl.uniform1i(program.uniformLocations["shadow"], 1);
-				else
-					gl.uniform1i(program.uniformLocations["shadow"], 0);
-					
+				if (drawType == 0)
+					gl.uniform1i(program.uniformLocations["drawType"], 1);
+				else if (drawType == 1)
+					gl.uniform1i(program.uniformLocations["drawType"], 0);
+                else
+                    gl.uniform1i(program.uniformLocations["drawType"], 2);
+                
                 if(model.materials)
                 {
                     var r = model.materials[materialIndex].diffuseReflectance;

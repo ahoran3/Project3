@@ -26,23 +26,29 @@ function createShaderProgram(gl)
 	  'precision mediump float;\n'+
 	  'uniform vec3 diffuseCoeff;\n'+
 	  'uniform sampler2D diffuseTex;\n'+
-	  'uniform samplerCube cubeTex;'+
+	  'uniform samplerCube cubeTex;\n'+
 	  'uniform vec3 eyePosition;\n' +
-	  'uniform int shadow;\n'+
+	  'uniform int drawType;\n'+	//0=shadow 1=reflection 2=texture
 	  'varying vec2 tCoord;\n'+
 	  'varying vec3 fragPosition,fragNormal, fragViewDir;\n'+
 	  'void main() {\n' +
+	  '	 vec4 texColor;\n' +
+	  '	 vec3 refColor;\n' +
 	  '	 float costheta = 1.0;\n'+
-	 '  vec3 viewDir = normalize(fragViewDir);\n'+
-	 '	vec3 normal = normalize(fragNormal);\n' +
-	  '	vec3 reflectDirection = reflect(viewDir,normal);\n' +
-	  ' vec3 texColor= textureCube(cubeTex, reflectDirection).rgb;\n' +
-	  ' if (shadow != 1){\n'+
-	  '		gl_FragColor = vec4(texColor*diffuseCoeff*costheta,1.0);\n' +
-	  '	}\n'+
-	  '	else {\n' +
+	  '   vec3 viewDir = normalize(fragViewDir);\n'+
+	  '	 vec3 normal = normalize(fragNormal);\n' +
+	  '	 vec3 reflectDirection = reflect(viewDir,normal);\n' + 
+	  '   if (drawType == 2){\n'+
+	  '	 	texColor = texture2D(diffuseTex, vec2(tCoord.s, tCoord.t));\n' +
+	  '	 	gl_FragColor = vec4(texColor.rgb*diffuseCoeff*costheta,1.0);\n' +
+	  '	 }\n'+
+	  '   if (drawType == 1){\n'+
+	  '	 	refColor = textureCube(cubeTex, reflectDirection).rgb;\n' +
+	  ' 		gl_FragColor = vec4(refColor*diffuseCoeff*costheta,1.0);\n' +
+	  '	 }\n'+
+	  '	 else {\n' +
 	  '		gl_FragColor = vec4(0.0,0.0,0.0,.95);\n' +
-	  '	}\n'+
+	  '	 }\n'+
 	  '}\n';
 	var program = createProgram(gl, VSHADER_SOURCE, FSHADER_SOURCE);
 	if (!program) {
@@ -55,7 +61,7 @@ function createShaderProgram(gl)
 	for (i=0; i<attribNames.length;i++){
 		program.attribLocations[attribNames[i]]=gl.getAttribLocation(program, attribNames[i]);
 	}
-	var uniformNames = ['modelT', 'viewT', 'projT', 'normalT', 'diffuseCoeff', 'diffuseTex', 'cubeTex', 'eyePosition', 'shadow'];
+	var uniformNames = ['modelT', 'viewT', 'projT', 'normalT', 'diffuseCoeff', 'diffuseTex', 'cubeTex', 'eyePosition', 'drawType'];
 	program.uniformLocations = {};
 	
 	for (i=0; i<uniformNames.length;i++){
