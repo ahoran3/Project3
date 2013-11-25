@@ -14,6 +14,7 @@
 <script src="main.js"></script>
 <script src="shaderLightingTexturing.js"></script>
 <script src="jsonRenderable.js"></script>
+<script src="scene.js"></script>
 <script src="camera.js"></script>
 </head>
 <body onload="main();">
@@ -27,11 +28,8 @@ Brandon Forster, Matt Hansen, and Alex Horan
 </select> -->
 <br/>Models:
 <input type="checkbox" id="checkbox_teapot" value="teapot" onclick="ModelFlag=true;"/>Teapot
-<input type="checkbox" id="checkbox_skull" value="skull" onclick="ModelFlag=true;"/>Skull
 <input type="checkbox" id="checkbox_house" value="house" onclick="ModelFlag=true;"/>House
 <input type="checkbox" id="checkbox_cube" value="cube" onclick="ModelFlag=true;"/>Cube
-
-<!-- <button type="submit" onclick="ModelFlag=true;">Submit</button> -->
 
 <br/>Environment:<select id="environmentList" onchange="changeEnvironmentFlag=true;">
   <option value="skybox">sky</option>
@@ -40,7 +38,13 @@ Brandon Forster, Matt Hansen, and Alex Horan
   <option value="St.Peter's">St.Peter's</option>
 </select>
 Dolly:<input type='button' value='+' onclick="dollyRequired=1;"/>
-	<input type='button' value='-' onclick="dollyRequired=-1;"/>	
+	<input type='button' value='-' onclick="dollyRequired=-1;"/>
+<br>	
+Light Position X:<input type="range" name="lightPosX" value="1" min="-3" max="3" step=".1" oninput="lightPosX=this.value;">		
+<br>
+Light Position Y:<input type="range" name="lightPosY" value="1" min=".2" max="3" step=".1" oninput="lightPosY=this.value;">		
+<br>
+Light Position Z:<input type="range" name="lightPosY" value="1" min="-3" max="3" step=".1" oninput="lightPosZ=this.value;">		
 <br>
 Toggle Rotate: <input type='button' value='Toggle' onclick="toggleRotateFlag();"/>	
 </body>

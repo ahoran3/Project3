@@ -11,12 +11,20 @@ function parseJSON(jsonFile) {
     var Doc = xhttp.responseText;
     return JSON.parse(Doc);
 }
-function JsonRenderable(gl, program, model_name, modelfilename) {
+function JsonRenderable(gl, program, model_name, modelfilename, num) {
+
+    var temp_diag = null;
+    var temp_min = null;
+    var temp_max = null;
+
     var model = parseJSON("./lib/model/"+model_name+"/models/" + modelfilename);
     var diffuseTexObjs = loadDiffuseTextures();
     var meshDrawables = loadMeshes(gl.TRIANGLES);
     var nodeTransformations = computeNodeTrasformations();
-    this.draw = function (mMatrix, T) {
+    this.name = model_name;
+    this.completedPlacementShift = false;
+    this.howMany = num;
+    this.draw = function (mMatrix, T, isShadow) {
         var mM, nM;
         var i, j, nMeshes, node;
         var nNodes = model.nodes.length;
@@ -28,8 +36,8 @@ function JsonRenderable(gl, program, model_name, modelfilename) {
             }
             else nM = nodeTransformations.normalT[i];
 			
-			if (T != null)
-            mM.translate(T[0], T[1], T[2]);
+			if (T!= null)
+                mM.translate(T[0], T[1], T[2]);
 			
             gl.uniformMatrix4fv(program.uniformLocations["modelT"], false, mM.elements);
             gl.uniformMatrix4fv(program.uniformLocations["normalT"], false, nM.elements);
@@ -38,6 +46,11 @@ function JsonRenderable(gl, program, model_name, modelfilename) {
             for (var j = 0; j < nMeshes; j++) {
                 var meshIndex = node.meshIndices[j];
                 var materialIndex = model.meshes[meshIndex].materialIndex;
+				if (isShadow == true)
+					gl.uniform1i(program.uniformLocations["shadow"], 1);
+				else
+					gl.uniform1i(program.uniformLocations["shadow"], 0);
+					
                 if(model.materials)
                 {
                     var r = model.materials[materialIndex].diffuseReflectance;
@@ -96,8 +109,7 @@ function JsonRenderable(gl, program, model_name, modelfilename) {
             }
             var nVertices = mesh.vertexPositions.length / 3;
             drawables[index] = new Drawable(
-				attribLocations, attribData, nElements, nVertices, mesh.indices, drawMode
-			);
+				attribLocations, attribData, nElements, nVertices, mesh.indices, drawMode);
         }
         return drawables;
     }
@@ -202,7 +214,7 @@ function JsonRenderable(gl, program, model_name, modelfilename) {
                 //custom translate the objects outside of JSON file -- THIS IS MAKING THE OBJECTS FADE IN AND OUT (Not affecting the floor)
                 // for(var ii = 0; ii < vArrays[i].length; ii++)
                 // {
-                //     vArrays[i][ii] += 60;
+                //     vArrays[i][ii] += sepDist;
                 //     ii++;
                 //     ii++;
                 // }
@@ -325,12 +337,23 @@ function JsonRenderable(gl, program, model_name, modelfilename) {
         dim.min = [xmin, ymin, zmin];
         dim.max = [xmax, ymax, zmax];
         model.diagonal = Math.sqrt(Math.pow((dim.max[0]-dim.min[0]),2)+Math.pow((dim.max[1]-dim.min[1]),2)+Math.pow((dim.max[2]-dim.min[2]),2));
+        
+        temp_min = dim.min;
+        temp_max = dim.max;
+        temp_diag = model.diagonal;
+
         console.log(model_name + "'s unaltered dimensions are " + dim.min+ ", "+ dim.max);
         console.log(model_name + "'s diagonal is " +model.diagonal);
 
         //set constant dimensions for camera 
         dim.min = [-30,-15, -10];
         dim.max = [30, 15,10];
+
+        //allows for inexpensive data look
+        this.bounds_diag = temp_diag;
+        this.bounds_min = temp_min;
+        this.bounds_max = temp_max;
         return dim;
     }
+
 }

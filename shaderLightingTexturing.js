@@ -1,6 +1,6 @@
 // Brandon Forster, Matt Hansen, and Alex Horan
 // CAP 4720 Project 3
-// 28 November 2013
+// 26 November 2013
 
 "use strict";
 function createShaderProgram(gl)
@@ -28,6 +28,7 @@ function createShaderProgram(gl)
 	  'uniform sampler2D diffuseTex;\n'+
 	  'uniform samplerCube cubeTex;'+
 	  'uniform vec3 eyePosition;\n' +
+	  'uniform int shadow;\n'+
 	  'varying vec2 tCoord;\n'+
 	  'varying vec3 fragPosition,fragNormal, fragViewDir;\n'+
 	  'void main() {\n' +
@@ -36,7 +37,12 @@ function createShaderProgram(gl)
 	 '	vec3 normal = normalize(fragNormal);\n' +
 	  '	vec3 reflectDirection = reflect(viewDir,normal);\n' +
 	  ' vec3 texColor= textureCube(cubeTex, reflectDirection).rgb;\n' +
-	  '  gl_FragColor = vec4(texColor*diffuseCoeff*costheta,1.0);\n' +
+	  ' if (shadow != 1){\n'+
+	  '		gl_FragColor = vec4(texColor*diffuseCoeff*costheta,1.0);\n' +
+	  '	}\n'+
+	  '	else {\n' +
+	  '		gl_FragColor = vec4(0.0,0.0,0.0,.95);\n' +
+	  '	}\n'+
 	  '}\n';
 	var program = createProgram(gl, VSHADER_SOURCE, FSHADER_SOURCE);
 	if (!program) {
@@ -49,7 +55,7 @@ function createShaderProgram(gl)
 	for (i=0; i<attribNames.length;i++){
 		program.attribLocations[attribNames[i]]=gl.getAttribLocation(program, attribNames[i]);
 	}
-	var uniformNames = ['modelT', 'viewT', 'projT', 'normalT', 'diffuseCoeff', 'diffuseTex', 'cubeTex', 'eyePosition'];
+	var uniformNames = ['modelT', 'viewT', 'projT', 'normalT', 'diffuseCoeff', 'diffuseTex', 'cubeTex', 'eyePosition', 'shadow'];
 	program.uniformLocations = {};
 	
 	for (i=0; i<uniformNames.length;i++){
