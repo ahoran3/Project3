@@ -62,7 +62,7 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
 				}
 				
 				if (alpha != null)
-					gl.uniform1f(program.uniformLocations["alpha"], .95);
+					gl.uniform1f(program.uniformLocations["alpha"], .90);
 				else
 					gl.uniform1f(program.uniformLocations["alpha"], 1.0);
 					
@@ -359,8 +359,8 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
         console.log(model_name + "'s diagonal is " +model.diagonal);
 
         //set constant dimensions for camera 
-        dim.min = [-30,-15, -10];
-        dim.max = [30, 15,10];
+        dim.min = [-30,-15, -30];
+        dim.max = [30, 15, 30];
 
         //allows for inexpensive data look
         this.bounds_diag = temp_diag;

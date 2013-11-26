@@ -87,7 +87,7 @@ function main(){
 		gl.stencilOp(gl.REPLACE, gl.REPLACE, gl.REPLACE);
 		gl.stencilFunc(gl.ALWAYS, 1, 0xFF);
 		// draw floor
-		model[0][0].draw(floorMMatrix, floorOffset, 3);
+		model[0][0].draw(floorMMatrix, floorOffset, 2);
 
 		gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
 		gl.stencilFunc(gl.EQUAL, 1, 0xFF);
@@ -96,7 +96,7 @@ function main(){
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
 		// draw blended floor
-		model[0][0].draw(floorMMatrix, floorOffset, 3, true);
+		model[0][0].draw(floorMMatrix, floorOffset, 2, true);
 		
 		gl.depthMask(true);
         // console.log("setting up shadowing");
@@ -222,16 +222,6 @@ function main(){
                 console.log ("deleting house");
             }
 
-            //CUBE
-            elem_spot = activeModels.indexOf("cube");
-            if(document.getElementById("checkbox_cube").checked == true && elem_spot == -1){
-                activeModels.push("cube");
-            }
-            if(document.getElementById("checkbox_cube").checked == false && elem_spot != -1){
-                activeModels.splice(elem_spot, 1);
-                console.log ("deleting cube");
-            }
-
             console.log (activeModels.length + " active models: ");
             for(var i=0; i < activeModels.length; i++)
                 console.log("\t" + activeModels[i] + " at index " + i);
@@ -268,7 +258,7 @@ function main(){
                 model.push(create2DrenderableList(currModel[i],1));
             }
             else //models that are not the floor
-                model.push(create2DrenderableList(currModel[i],3));
+                model.push(create2DrenderableList(currModel[i],4));
 
             var bounds = model[i][0].getBounds();
             
