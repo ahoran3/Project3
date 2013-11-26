@@ -24,7 +24,7 @@ var texCubeObj;
 function main(){
     //set teapot to default model
     //document.getElementById("checkbox_house").checked = true;
-    activeModels.push("floor");
+    activeModels.push("ground");
     //activeModels.push("teapot");
     // ... global variables ...
     var gl, model, camera, program, reflectionMatrix, shadowProjMatrix;

@@ -1,0 +1,48 @@
+{
+	// "name" : "ground",
+	// "materials" : [
+	// 	{
+	// 		"diffuseTexture":["ground.png"],
+	// 		"diffuseReflectance" :[0.3,0.3,0.3,1],
+	// 		"ambientReflectance": [0,0,0,1],
+	// 		"specularReflectance": [0.4,0.4,0.4,1],
+	// 		"shininess": 4,
+	// 		"emissionColor": [0,0,0,1]
+	// 	}
+	// ],
+	"meshes" : [
+	{
+	"vertexPositions":[ -10.0, 0.0, 10.0,
+					10.0, 0.0, 10.0,
+					-10.0, 0.0, -10.0,
+					10.0, 0.0, -10.0
+					],
+					
+	"vertexNormals" :[		0.0, 1.0, 0.0,
+						0.0, 1.0, 0.0,
+						0.0, 1.0, 0.0,
+						0.0, 1.0, 0.0
+					],
+	"vertexTexCoordinates" : [[
+						0.0, 0.0,
+						10.0, 0.0,
+						0.0, 10.0,
+						10.0, 10.0
+						]],
+	"indicies" : [
+						0, 1, 2, 3
+						],
+	"materialIndex" : 0
+	}
+	],
+	"nodes" : [
+		{
+			"modelMatrix" : [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+			"meshIndices" : [0]
+		}
+	]
+}
+
+
+
+				
