@@ -61,7 +61,6 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
 					case 3: gl.uniform1i(program.uniformLocations["lightType"], 3); break;
 				}
 				
-				addMessage(alpha);
 				if (alpha != null)
 					gl.uniform1f(program.uniformLocations["alpha"], .95);
 				else

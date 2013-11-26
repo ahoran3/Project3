@@ -121,7 +121,6 @@ function main(){
 				// 3: plane
 				
 				// reflection
-				addMessage("ref draw");
                 model[i][j].draw(reflectionMatrix, null, 2, true);
 				
 				// shadow
