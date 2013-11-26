@@ -15,7 +15,7 @@ function createShaderProgram(gl)
 	  'varying vec3 fragPosition,fragNormal, fragViewDir;\n'+
 	  'void main() {\n' +
 	  '  fragPosition = (viewT*modelT*vec4(position,1.0)).xyz;\n' +
-	  '  fragNormal = normalize((vec4(normal,0.0)).xyz);\n'+
+	  '  fragNormal = normalize((normalT*vec4(normal,0.0)).xyz);\n'+
 	  '  fragViewDir = position.xyz - eyePosition;\n'+
 	  '  tCoord = texCoord;\n'+
 	  '  gl_Position = projT*viewT*modelT*vec4(position,1.0);\n' +
@@ -38,7 +38,7 @@ function createShaderProgram(gl)
 	 '  vec3 viewDir = normalize(fragViewDir);\n'+
 	 '	vec3 normal = normalize(fragNormal);\n' +
 	  '	vec3 reflectDirection = reflect(viewDir,normal);\n' +
-	  ' vec3 texColor= textureCube(cubeTex, reflectDirection).rgb;\n' +
+	  ' vec3 texColor= texture2D(diffuseTex,tCoord).rgb;\n'+
 	  // "regular" models
 	  ' if (lightType == 0){\n'+
 	  '		gl_FragColor = vec4(texColor*diffuseCoeff*costheta,1.0);\n' +
