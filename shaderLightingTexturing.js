@@ -28,17 +28,19 @@ function createShaderProgram(gl)
 	  'uniform sampler2D diffuseTex;\n'+
 	  'uniform samplerCube cubeTex;'+
 	  'uniform vec3 eyePosition;\n' +
+	  'vec3 ambience;\n' +
 	  'uniform vec3 lightPosition;\n' +
 	  'uniform int lightType;\n'+
 	  'uniform float alpha;\n'+
 	  'varying vec2 tCoord;\n'+
 	  'varying vec3 fragPosition,fragNormal, fragViewDir;\n'+
 	  'void main() {\n' +
+	  '   ambience = vec3(.25,.25,.25);\n' + 
 	  '	 float costheta = max(dot(normalize(lightPosition),normalize(fragNormal)),0.0);\n'+
-	  '  vec3 viewDir = normalize(fragViewDir);\n'+
-	  '	vec3 normal = normalize(fragNormal);\n' +
-	  '	vec3 reflectDirection = reflect(viewDir,normal);\n' +
-	  ' vec3 texColor= texture2D(diffuseTex,tCoord).rgb;\n'+
+	  '   vec3 viewDir = normalize(fragViewDir);\n'+
+	  '	 vec3 normal = normalize(fragNormal);\n' +
+	  '	 vec3 reflectDirection = reflect(viewDir,normal);\n' +
+	  '   vec3 texColor= texture2D(diffuseTex,tCoord).rgb;\n'+
 	  // "regular" models
 	  ' if (lightType == 0){\n'+
 	  '		gl_FragColor = vec4(texColor*diffuseCoeff*costheta,1.0);\n' +
