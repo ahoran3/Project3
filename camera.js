@@ -20,7 +20,9 @@ function Camera(gl,program,d,modelUp) // Compute a camera from model's bounding 
 		var W = [m.elements[2],m.elements[6],m.elements[10]];
 		var deltaEye = [delta*diagonal*W[0],delta*diagonal*W[1],-delta*diagonal*W[2]];
 		//console.log(deltaEye);
-		eye[0] += deltaEye[0];eye[1] += deltaEye[1];eye[2] += deltaEye[2];
+		eye[0] += deltaEye[0];
+		eye[1] += deltaEye[1];
+		eye[2] += deltaEye[2];
 		//at[0] += deltaEye[0];at[1] += deltaEye[1];at[2] += deltaEye[2];
 		//console.log(eye);
 	}

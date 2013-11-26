@@ -1,0 +1,44 @@
+{
+	"name" : "ground",
+	"materials" : [
+		{
+			"diffuseTexture":["water-web_blended.jpg"],
+			"diffuseReflectance" :[0.3,0.3,0.3,1],
+			"ambientReflectance": [0,0,0,1],
+			"specularReflectance": [0.4,0.4,0.4,1],
+			"shininess": 4,
+			"emissionColor": [0,0,0,1]
+		}
+	],
+	"meshes" : [
+	{
+	"vertexPositions":[ -250.0, 0.0,250.0,
+					250.0, 0.0, 250.0,
+					-250.0, 0.0,-250.0,
+					250.0, 0.0,-250.0
+					],
+					
+	"vertexNormals" :[		0.0, 1.0, 0.0,
+						0.0, 1.0, 0.0,
+						0.0, 1.0, 0.0,
+						0.0, 1.0, 0.0
+					],
+	"vertexTexCoordinates" : [[
+						0.0, 0.0,
+						10.0, 0.0,
+						0.0, 10.0,
+						10.0, 10.0
+						]],
+	"indices" : [
+						0, 1, 2, 2, 3, 1
+						],
+	"materialIndex" : 0
+	}
+	],
+	"nodes" : [
+		{
+			"modelMatrix" : [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+			"meshIndices" : [0]
+		}
+	]
+}

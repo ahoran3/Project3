@@ -61,10 +61,8 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
 					case 3: gl.uniform1i(program.uniformLocations["lightType"], 3); break;
 				}
 				
-				if (alpha != null)
-					gl.uniform1f(program.uniformLocations["alpha"], .90);
-				else
-					gl.uniform1f(program.uniformLocations["alpha"], 1.0);
+				if (alpha)
+					gl.uniform1f(program.uniformLocations["alpha"], alpha);
 					
                 if(model.materials)
                 {

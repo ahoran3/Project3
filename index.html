@@ -32,6 +32,7 @@ Brandon Forster, Matt Hansen, and Alex Horan
 Models:
 <input type="checkbox" id="checkbox_teapot" value="teapot" onclick="ModelFlag=true;"/>Church
 <input type="checkbox" id="checkbox_house" value="house" onclick="ModelFlag=true;"/>House
+
 <!-- <input type="checkbox" id="checkbox_cube" value="cube" onclick="ModelFlag=true;"/>Cube -->
 
 <!-- <br/>Environment:<select id="environmentList" onchange="changeEnvironmentFlag=true;">
@@ -46,11 +47,14 @@ Dolly:<input type='button' value='+' onclick="dollyRequired=1;"/>
 <br>	
 Light Position X:<input type="range" id="range" name="lightPosX" value="3" min="-3" max="3" step=".1" oninput="lightPosX=this.value;">		
 <br/>
-Light Position Y:<input type="range" name="lightPosY" value="3" min=".2" max="3" step=".1" oninput="lightPosY=this.value;">		
+Light Position Y:<input type="range" name="lightPosY" value="3" min=".5" max="3" step=".1" oninput="lightPosY=this.value;">		
 <br>
 Light Position Z:<input type="range" name="lightPosY" value="3" min="-3" max="3" step=".1" oninput="lightPosZ=this.value;">		
-<br>
-Toggle Rotate: <input type='button' value='Toggle' onclick="toggleRotateFlag();"/>	
+<br/>
+Toggle Rotate: <input type='button' value='Toggle' onclick="toggleRotateFlag();"/>
+<br/>
+Toggle Flood: <input type='button' value='Toggle' onclick="toggleFloodFlag();"/>
+
 </section>
 </body>
 </html>

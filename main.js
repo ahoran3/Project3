@@ -6,6 +6,8 @@
 //This function gets called when reading a JSON file. It stores the current xml information.
 
 var ModelFlag = true;
+var ReflectionFlag = false;
+var ReflectionChange = false;
 var changeEnvironmentFlag = false;
 var rotateFlag = true;
 var dollyRequired = 0;
@@ -18,6 +20,7 @@ var seperationDistance = 0;
 var floorOffset= [0,2,0];
 var modelOffset = null;
 function toggleRotateFlag(){rotateFlag = !rotateFlag;}
+function toggleFloodFlag(){ReflectionFlag = !ReflectionFlag; ReflectionChange = true;}
 
 var texCubeObj;
 
@@ -61,6 +64,25 @@ function main(){
             console.log("gettingout of addmodel");
 		}    
 
+        if(ReflectionChange)
+        {   
+            console.log("reflection is " + ReflectionFlag);
+            console.log("switching from " + model[0][0].name);
+            if(model[0][0].name == "ground") 
+            {
+                activeModels.shift("ground");
+                activeModels.unshift("flood");
+            }
+            if(model[0][0].name == "flood")
+            {
+                activeModels.shift("flood");
+                activeModels.unshift("ground");
+            }
+            model = addNewModel();
+            ReflectionChange = false;
+            console.log("new model0 is " + model[0][0].name);
+        }
+
         if (changeEnvironmentFlag)
         {
             chooseEnvironment(document.getElementById('environmentList').value);
@@ -87,7 +109,7 @@ function main(){
 		gl.stencilOp(gl.REPLACE, gl.REPLACE, gl.REPLACE);
 		gl.stencilFunc(gl.ALWAYS, 1, 0xFF);
 		// draw floor
-		model[0][0].draw(floorMMatrix, floorOffset, 2);
+        model[0][0].draw(floorMMatrix, floorOffset, 2, 1);
 
 		gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
 		gl.stencilFunc(gl.EQUAL, 1, 0xFF);
@@ -95,9 +117,13 @@ function main(){
 		gl.enable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-		// draw blended floor
-		model[0][0].draw(floorMMatrix, floorOffset, 2, true);
+        if (ReflectionFlag)    	
+        // draw blended floor
+        //items[items.indexOf(3452)] = 1010;
+    		model[0][0].draw(floorMMatrix, floorOffset, 2, .85);
+        
 		
+
 		gl.depthMask(true);
         // console.log("setting up shadowing");
 		
@@ -120,11 +146,12 @@ function main(){
 				// 2: ref
 				// 3: plane
 				
-				// reflection
-                model[i][j].draw(reflectionMatrix, null, 2, true);
-				
+                if(ReflectionFlag)
+    				// reflection
+                    model[i][j].draw(reflectionMatrix, null, 2, .8);
+    				
 				// shadow
-                model[i][j].draw(shadowProjMatrix, null, 1);
+                model[i][j].draw(shadowProjMatrix, null, 1, 1);
             }
         }
 		gl.disable(gl.BLEND);
@@ -151,12 +178,12 @@ function main(){
                         modelOffset[1] *= -j;
                         modelOffset[2] *= j;
                         console.log("offsetting " + model[i][j].name + " (#" + j + ") by X: " + modelOffset[0] + " Y: " + modelOffset[1] + " Z: " + modelOffset[2]);
-                        model[i][j].draw(null, modelOffset, 2);
+                        model[i][j].draw(null, modelOffset, 2, 1);
                         model[i][j].completedPlacementShift = true;
                         modelOffset = [seperationDistance, seperationDistance, 0];
                     }
                     else  
-                        model[i][j].draw(null, null, 2);
+                        model[i][j].draw(null, null, 2, 1);
                 }
                 //other models are correct
                 else
@@ -171,12 +198,12 @@ function main(){
                         modelOffset[1] *= j;
                         modelOffset[2] *= j;
                         console.log("offsetting " + model[i][j].name + " (#" + j + ") by X: " + modelOffset[0] + " Y: " + modelOffset[1] + " Z: " + modelOffset[2]);
-                        model[i][j].draw(null, modelOffset, 0);
+                        model[i][j].draw(null, modelOffset, 0, 1);
                         model[i][j].completedPlacementShift = true;
                         modelOffset = [seperationDistance, 0, seperationDistance];
                     }
                     else  
-                        model[i][j].draw(null, null, 0);
+                        model[i][j].draw(null, null, 0, 1);
                 }
             }
 
