@@ -48,11 +48,11 @@ function createShaderProgram(gl)
 	  '	}\n'+
 	  // reflected model
 	  '	else if (lightType == 2){\n' +
-	  '		gl_FragColor = vec4(texColor*diffuseCoeff*costheta,alpha);\n' +
+	  '		gl_FragColor = vec4(texColor*diffuseCoeff*costheta,1.0);\n' +
 	  '	}\n'+
 	  // normal mapped surface
 	  '	else if (lightType == 3){\n' +
-	  '		gl_FragColor = vec4(texColor*diffuseCoeff,1.0);\n' +
+	  '		gl_FragColor = vec4(texColor*diffuseCoeff,alpha);\n' +
 	  '	}\n'+
 	  '}\n';
 	var program = createProgram(gl, VSHADER_SOURCE, FSHADER_SOURCE);

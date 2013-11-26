@@ -83,6 +83,7 @@ function main(){
 		gl.enable(gl.STENCIL_TEST);
 		gl.stencilOp(gl.REPLACE, gl.REPLACE, gl.REPLACE);
 		gl.stencilFunc(gl.ALWAYS, 1, 0xFF);
+		// draw floor
 		model[0][0].draw(floorMMatrix, floorOffset, 3);
 
 		gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
@@ -91,6 +92,7 @@ function main(){
 		gl.enable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
+		// draw blended floor
 		model[0][0].draw(floorMMatrix, floorOffset, 3);
 		
 		gl.depthMask(true);
@@ -110,7 +112,15 @@ function main(){
                 reflectionMatrix = computeReflectionMatrix(Q, N);
                 shadowProjMatrix = computeShadowProjectionMatrix(Q,N,L);
 
+				// 0: reg
+				// 1: shadow
+				// 2: ref
+				// 3: plane
+				
+				// reflection
                 model[i][j].draw(reflectionMatrix, null, 2);
+				
+				// regular model (???)
                 model[i][j].draw(shadowProjMatrix, null, 1);
             }
         }
@@ -147,7 +157,7 @@ function main(){
                         modelOffset = [seperationDistance, seperationDistance, 0];
                     }
                     else  
-                        model[i][j].draw();
+                        model[i][j].draw(null, null, 0);
                 }
                 //other models are correct
                 else
@@ -169,7 +179,7 @@ function main(){
                         modelOffset = [seperationDistance, 0, seperationDistance];
                     }
                     else  
-                        model[i][j].draw();
+                        model[i][j].draw(null, null, 0);
                 }
 
                 

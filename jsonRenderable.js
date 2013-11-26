@@ -24,7 +24,7 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
     this.name = model_name;
     this.completedPlacementShift = false;
     this.howMany = num;
-    this.draw = function (mMatrix, T, lightType) {
+    this.draw = function (mMatrix, T, lightType, alpha) {
         var mM, nM;
         var i, j, nMeshes, node;
         var nNodes = model.nodes.length;
@@ -59,7 +59,10 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
 					
 					// normal mapped surface
 					case 3: gl.uniform1i(program.uniformLocations["lightType"], 3);
-							gl.uniform1i(program.uniformLocations["alpha"], .8);
+							if (alpha != null)
+								gl.uniform1i(program.uniformLocations["alpha"], .8);
+							else
+								gl.uniform1i(program.uniformLocations["alpha"], 1.0);
 							break;
 				}
 					
