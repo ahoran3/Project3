@@ -83,7 +83,7 @@ function main(){
 		gl.enable(gl.STENCIL_TEST);
 		gl.stencilOp(gl.REPLACE, gl.REPLACE, gl.REPLACE);
 		gl.stencilFunc(gl.ALWAYS, 1, 0xFF);
-		model[0][0].draw(floorMMatrix, floorOffset);
+		model[0][0].draw(floorMMatrix, floorOffset, 3);
 
 		gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
 		gl.stencilFunc(gl.EQUAL, 1, 0xFF);
@@ -91,7 +91,7 @@ function main(){
 		gl.enable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-		model[0][0].draw(floorMMatrix, floorOffset); //TODO draw with alpha
+		model[0][0].draw(floorMMatrix, floorOffset, 3);
 		
 		gl.depthMask(true);
         // console.log("setting up shadowing");
@@ -110,8 +110,8 @@ function main(){
                 reflectionMatrix = computeReflectionMatrix(Q, N);
                 shadowProjMatrix = computeShadowProjectionMatrix(Q,N,L);
 
-                model[i][j].draw(reflectionMatrix);
-                model[i][j].draw(shadowProjMatrix, null, true);
+                model[i][j].draw(reflectionMatrix, null, 2);
+                model[i][j].draw(shadowProjMatrix, null, 1);
             }
         }
 		gl.disable(gl.BLEND);
@@ -142,7 +142,7 @@ function main(){
                         console.log("\tmodeloffset2 is: "+  modelOffset[2]);
                         modelOffset[2] *= j;
                         console.log("offsetting " + model[i][j].name + " (#" + j + ") by X: " + modelOffset[0] + " Y: " + modelOffset[1] + " Z: " + modelOffset[2]);
-                        model[i][j].draw(null, modelOffset);
+                        model[i][j].draw(null, modelOffset, 0);
                         model[i][j].completedPlacementShift = true;
                         modelOffset = [seperationDistance, seperationDistance, 0];
                     }
@@ -164,7 +164,7 @@ function main(){
                         console.log("\tmodeloffset2 is: "+  modelOffset[2]);
                         modelOffset[2] *= j;
                         console.log("offsetting " + model[i][j].name + " (#" + j + ") by X: " + modelOffset[0] + " Y: " + modelOffset[1] + " Z: " + modelOffset[2]);
-                        model[i][j].draw(null, modelOffset);
+                        model[i][j].draw(null, modelOffset, 0);
                         model[i][j].completedPlacementShift = true;
                         modelOffset = [seperationDistance, 0, seperationDistance];
                     }
