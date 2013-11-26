@@ -49,6 +49,9 @@ function main(){
         // console.log ("draw function");
         gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT ); 
 		gl.useProgram(program);
+		
+		// update the position of the light	
+		gl.uniform3fv(program.uniformLocations["lightPosition"], [lightPosX,lightPosY,lightPosZ]);
 	
         if (ModelFlag)
 		{

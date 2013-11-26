@@ -28,12 +28,13 @@ function createShaderProgram(gl)
 	  'uniform sampler2D diffuseTex;\n'+
 	  'uniform samplerCube cubeTex;'+
 	  'uniform vec3 eyePosition;\n' +
+	  'uniform vec3 lightPosition;\n' +
 	  'uniform int lightType;\n'+
 	  'uniform float alpha;\n'+
 	  'varying vec2 tCoord;\n'+
 	  'varying vec3 fragPosition,fragNormal, fragViewDir;\n'+
 	  'void main() {\n' +
-	  '	 float costheta = max(dot(normalize(-fragPosition),normalize(fragNormal)),0.0);\n'+
+	  '	 float costheta = max(dot(normalize(lightPosition),normalize(fragNormal)),0.0);\n'+
 	 '  vec3 viewDir = normalize(fragViewDir);\n'+
 	 '	vec3 normal = normalize(fragNormal);\n' +
 	  '	vec3 reflectDirection = reflect(viewDir,normal);\n' +
@@ -66,7 +67,7 @@ function createShaderProgram(gl)
 	for (i=0; i<attribNames.length;i++){
 		program.attribLocations[attribNames[i]]=gl.getAttribLocation(program, attribNames[i]);
 	}
-	var uniformNames = ['modelT', 'viewT', 'projT', 'normalT', 'diffuseCoeff', 'diffuseTex', 'cubeTex', 'eyePosition', 'lightType', 'alpha'];
+	var uniformNames = ['modelT', 'viewT', 'projT', 'normalT', 'diffuseCoeff', 'diffuseTex', 'cubeTex', 'eyePosition', 'lightType', 'alpha', 'lightPosition'];
 	program.uniformLocations = {};
 	
 	for (i=0; i<uniformNames.length;i++){
