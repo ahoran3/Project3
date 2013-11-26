@@ -15,7 +15,7 @@ function createShaderProgram(gl)
 	  'varying vec3 fragPosition,fragNormal, fragViewDir;\n'+
 	  'void main() {\n' +
 	  '  fragPosition = (viewT*modelT*vec4(position,1.0)).xyz;\n' +
-	  '  fragNormal = normalize((viewT*vec4(normal,0.0)).xyz);\n'+
+	  '  fragNormal = normalize((vec4(normal,0.0)).xyz);\n'+
 	  '  fragViewDir = position.xyz - eyePosition;\n'+
 	  '  tCoord = texCoord;\n'+
 	  '  gl_Position = projT*viewT*modelT*vec4(position,1.0);\n' +
