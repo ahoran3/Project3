@@ -24,7 +24,11 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
     this.name = model_name;
     this.completedPlacementShift = false;
     this.howMany = num;
+<<<<<<< HEAD
     this.draw = function (mMatrix, T, drawType) {
+=======
+    this.draw = function (mMatrix, T, lightType, alpha) {
+>>>>>>> origin/Brandon-
         var mM, nM;
         var i, j, nMeshes, node;
         var nNodes = model.nodes.length;
@@ -49,6 +53,7 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
             for (var j = 0; j < nMeshes; j++) {
                 var meshIndex = node.meshIndices[j];
                 var materialIndex = model.meshes[meshIndex].materialIndex;
+<<<<<<< HEAD
 				if (drawType == 0)
 					gl.uniform1i(program.uniformLocations["drawType"], 0);
 				else if (drawType == 1)
@@ -57,6 +62,28 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
                     gl.uniform1i(program.uniformLocations["drawType"], 2);
                 else
                     console.log("unknown drawType");
+=======
+				switch (lightType)
+				{
+					// "regular" model
+					case 0: gl.uniform1i(program.uniformLocations["lightType"], 0); break;
+					
+					// projection shadow of model
+					case 1: gl.uniform1i(program.uniformLocations["lightType"], 1); break;
+					
+					// reflected model
+					case 2: gl.uniform1i(program.uniformLocations["lightType"], 2); break;
+					
+					// normal mapped surface
+					case 3: gl.uniform1i(program.uniformLocations["lightType"], 3); break;
+				}
+				
+				if (alpha != null)
+					gl.uniform1f(program.uniformLocations["alpha"], .95);
+				else
+					gl.uniform1f(program.uniformLocations["alpha"], 1.0);
+					
+>>>>>>> origin/Brandon-
                 if(model.materials)
                 {
                     var r = model.materials[materialIndex].diffuseReflectance;

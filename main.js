@@ -49,6 +49,9 @@ function main(){
         // console.log ("draw function");
         gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT ); 
 		gl.useProgram(program);
+		
+		// update the position of the light	
+		gl.uniform3fv(program.uniformLocations["lightPosition"], [lightPosX,lightPosY,lightPosZ]);
 	
         if (ModelFlag)
 		{
@@ -83,7 +86,12 @@ function main(){
 		gl.enable(gl.STENCIL_TEST);
 		gl.stencilOp(gl.REPLACE, gl.REPLACE, gl.REPLACE);
 		gl.stencilFunc(gl.ALWAYS, 1, 0xFF);
+<<<<<<< HEAD
 		model[0][0].draw(floorMMatrix, floorOffset, 1);
+=======
+		// draw floor
+		model[0][0].draw(floorMMatrix, floorOffset, 3);
+>>>>>>> origin/Brandon-
 
 		gl.stencilOp(gl.KEEP, gl.KEEP, gl.KEEP);
 		gl.stencilFunc(gl.EQUAL, 1, 0xFF);
@@ -91,7 +99,12 @@ function main(){
 		gl.enable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
+<<<<<<< HEAD
 		model[0][0].draw(floorMMatrix, floorOffset, 1); //TODO draw with alpha
+=======
+		// draw blended floor
+		model[0][0].draw(floorMMatrix, floorOffset, 3, true);
+>>>>>>> origin/Brandon-
 		
 		gl.depthMask(true);
         // console.log("setting up shadowing");
@@ -110,6 +123,7 @@ function main(){
                 reflectionMatrix = computeReflectionMatrix(Q, N);
                 shadowProjMatrix = computeShadowProjectionMatrix(Q,N,L);
 
+<<<<<<< HEAD
 
                 model[i][j].draw(reflectionMatrix, null, 1); //1=reflection
                 model[i][j].draw(shadowProjMatrix, null, 0); //0=shadow
@@ -117,6 +131,18 @@ function main(){
                 model[i][0].draw(reflectionMatrix);
                 model[i][0].draw(shadowProjMatrix, null, true);
 
+=======
+				// 0: reg
+				// 1: shadow
+				// 2: ref
+				// 3: plane
+				
+				// reflection
+                model[i][j].draw(reflectionMatrix, null, 2, true);
+				
+				// shadow
+                model[i][j].draw(shadowProjMatrix, null, 1);
+>>>>>>> origin/Brandon-
             }
         }
 		gl.disable(gl.BLEND);
@@ -144,12 +170,20 @@ function main(){
                         modelOffset[1] *= -j;
                         modelOffset[2] *= j;
                         console.log("offsetting " + model[i][j].name + " (#" + j + ") by X: " + modelOffset[0] + " Y: " + modelOffset[1] + " Z: " + modelOffset[2]);
+<<<<<<< HEAD
                         model[i][j].draw(null, modelOffset, 2); //2=texture
+=======
+                        model[i][j].draw(null, modelOffset, 0);
+>>>>>>> origin/Brandon-
                         model[i][j].completedPlacementShift = true;
                         modelOffset = [seperationDistance, seperationDistance, 0];
                     }
                     else  
+<<<<<<< HEAD
                         model[i][j].draw(null, null, 2); //2=texture
+=======
+                        model[i][j].draw(null, null, 0);
+>>>>>>> origin/Brandon-
                 }
                 //other models are correct
                 else
@@ -163,12 +197,20 @@ function main(){
                         modelOffset[1] *= j;
                         modelOffset[2] *= j;
                         console.log("offsetting " + model[i][j].name + " (#" + j + ") by X: " + modelOffset[0] + " Y: " + modelOffset[1] + " Z: " + modelOffset[2]);
+<<<<<<< HEAD
                         model[i][j].draw(null, modelOffset, 2); //2=texture
+=======
+                        model[i][j].draw(null, modelOffset, 0);
+>>>>>>> origin/Brandon-
                         model[i][j].completedPlacementShift = true;
                         modelOffset = [seperationDistance, 0, seperationDistance];
                     }
                     else  
+<<<<<<< HEAD
                         model[i][j].draw(null, null, 2); //2=texture
+=======
+                        model[i][j].draw(null, null, 0);
+>>>>>>> origin/Brandon-
                 }
 
                 
