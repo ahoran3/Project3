@@ -10,7 +10,7 @@ function parseJSON(jsonFile) {
     xhttp.send(null);
     var Doc = xhttp.responseText;
     return JSON.parse(Doc);
-}
+} 
 function JsonRenderable(gl, program, model_name, modelfilename, num) {
 
     var temp_diag = null;
@@ -24,7 +24,7 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
     this.name = model_name;
     this.completedPlacementShift = false;
     this.howMany = num;
-    this.draw = function (mMatrix, T, isShadow) {
+    this.draw = function (mMatrix, T, drawType) {
         var mM, nM;
         var i, j, nMeshes, node;
         var nNodes = model.nodes.length;
@@ -46,11 +46,13 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
             for (var j = 0; j < nMeshes; j++) {
                 var meshIndex = node.meshIndices[j];
                 var materialIndex = model.meshes[meshIndex].materialIndex;
-				if (isShadow == true)
-					gl.uniform1i(program.uniformLocations["shadow"], 1);
+				if (drawType == 1)
+					gl.uniform1i(program.uniformLocations["drawType"], 1); //shadow
+				else if (drawType == 0)
+					gl.uniform1i(program.uniformLocations["drawType"], 0); //reflection
 				else
-					gl.uniform1i(program.uniformLocations["shadow"], 0);
-					
+                    gl.uniform1i(program.uniformLocations["drawType"], 2); //texture
+
                 if(model.materials)
                 {
                     var r = model.materials[materialIndex].diffuseReflectance;
@@ -101,7 +103,7 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
                 switch (attribName) {
                     case 'position': attribData[i] = mesh.vertexPositions; nElements[i] = 3; break;
                     case 'normal': attribData[i] = mesh.vertexNormals; nElements[i] = 3; break;
-                    case 'texCoord': attribData[i] = (mesh.vertexTexCoordinates) ? mesh.vertexTexCoordinates[0] : undefined; nElements[i] = 2; break;
+                    case 'texCoord': attribData[i] = (mesh.vertexTexCoordinates) ? mesh.vertexTexCoordinates[0] : undefined; nElements[i] = 2; console.log("no textures"); break;
                     default: { attribData[i] = undefined; nElements[i] = 1; }
                 }
                 attribLocations[i] = program.attribLocations[attribName];
