@@ -96,7 +96,7 @@ function main(){
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
 		// draw blended floor
-		model[0][0].draw(floorMMatrix, floorOffset, 3);
+		model[0][0].draw(floorMMatrix, floorOffset, 3, true);
 		
 		gl.depthMask(true);
         // console.log("setting up shadowing");
@@ -121,9 +121,10 @@ function main(){
 				// 3: plane
 				
 				// reflection
-                model[i][j].draw(reflectionMatrix, null, 2);
+				addMessage("ref draw");
+                model[i][j].draw(reflectionMatrix, null, 2, true);
 				
-				// regular model (???)
+				// shadow
                 model[i][j].draw(shadowProjMatrix, null, 1);
             }
         }

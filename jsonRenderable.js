@@ -58,13 +58,14 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
 					case 2: gl.uniform1i(program.uniformLocations["lightType"], 2); break;
 					
 					// normal mapped surface
-					case 3: gl.uniform1i(program.uniformLocations["lightType"], 3);
-							if (alpha != null)
-								gl.uniform1i(program.uniformLocations["alpha"], .8);
-							else
-								gl.uniform1i(program.uniformLocations["alpha"], 1.0);
-							break;
+					case 3: gl.uniform1i(program.uniformLocations["lightType"], 3); break;
 				}
+				
+				addMessage(alpha);
+				if (alpha != null)
+					gl.uniform1f(program.uniformLocations["alpha"], .95);
+				else
+					gl.uniform1f(program.uniformLocations["alpha"], 1.0);
 					
                 if(model.materials)
                 {
