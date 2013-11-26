@@ -35,8 +35,8 @@ function createShaderProgram(gl)
 	  'varying vec3 fragPosition,fragNormal, fragViewDir;\n'+
 	  'void main() {\n' +
 	  '	 float costheta = max(dot(normalize(lightPosition),normalize(fragNormal)),0.0);\n'+
-	 '  vec3 viewDir = normalize(fragViewDir);\n'+
-	 '	vec3 normal = normalize(fragNormal);\n' +
+	  '  vec3 viewDir = normalize(fragViewDir);\n'+
+	  '	vec3 normal = normalize(fragNormal);\n' +
 	  '	vec3 reflectDirection = reflect(viewDir,normal);\n' +
 	  ' vec3 texColor= texture2D(diffuseTex,tCoord).rgb;\n'+
 	  // "regular" models

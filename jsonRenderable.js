@@ -83,8 +83,9 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
                     gl.uniform1i(program.uniformLocations["texturingEnabled"], 1);
                 }
                 else gl.uniform1i(program.uniformLocations["texturingEnabled"], 0);
-                meshDrawables[meshIndex].draw();
-            }
+                meshDrawables[j].draw();
+                // console.log("Drawing " + model_name + "'s meshes")
+;            }
         }
     }
     function computeNodeTrasformations() {
@@ -129,7 +130,6 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
         return drawables;
     }
 
-
     function loadDiffuseTextures() {
         function setTexture(gl, textureFileName) {
             var tex = gl.createTexture();
@@ -137,9 +137,7 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
             var img = new Image();
             //console.log("From Loader: "+textureFileName);
             //imagecount++;
-            img.onload =  //function() { imagecount--; console.log(textureFileName+" loaded");createImageBuffer(img, tex, gl.TEXTURE_2D); }; 
-
-			function () {
+            img.onload = function () {
 			    function isPowerOfTwo(x) {
 			        return (x & (x - 1)) == 0;
 			    }
@@ -206,8 +204,8 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
                     else texObjs[i] = undefined;
                 }
             }
-            return texObjs;
         }
+        return texObjs;
     }
 
 

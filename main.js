@@ -10,10 +10,10 @@ var changeEnvironmentFlag = false;
 var rotateFlag = true;
 var dollyRequired = 0;
 var activeModels = new Array();
-var angle = 0;
-var lightPosX = 1;
-var lightPosY = 1;
-var lightPosZ = 1; 
+var angle = 180;
+var lightPosX = 3;
+var lightPosY = 3;
+var lightPosZ = 3; 
 var seperationDistance = 0;
 var floorOffset= [0,2,0];
 var modelOffset = null;
@@ -145,22 +145,18 @@ function main(){
                 {
                     if(model[i][j].completedPlacementShift == false)
                     {   
-
                         //offsets the current model by dynamic seperation distance 
                         // i-1 because the first model (i=1) should start in the middle without modelOffset
-                        console.log("\tmodeloffset0 is: "+  modelOffset[0]);
                         modelOffset[0] *= i;
-                        console.log("\tmodeloffset1 is: "+  modelOffset[1]);
                         modelOffset[1] *= -j;
-                        console.log("\tmodeloffset2 is: "+  modelOffset[2]);
                         modelOffset[2] *= j;
                         console.log("offsetting " + model[i][j].name + " (#" + j + ") by X: " + modelOffset[0] + " Y: " + modelOffset[1] + " Z: " + modelOffset[2]);
-                        model[i][j].draw(null, modelOffset, 0);
+                        model[i][j].draw(null, modelOffset, 2);
                         model[i][j].completedPlacementShift = true;
                         modelOffset = [seperationDistance, seperationDistance, 0];
                     }
                     else  
-                        model[i][j].draw(null, null, 0);
+                        model[i][j].draw(null, null, 2);
                 }
                 //other models are correct
                 else
@@ -170,11 +166,9 @@ function main(){
 
                         //offsets the current model by dynamic seperation distance 
                         // i-1 because the first model (i=1) should start in the middle without modelOffset
-                        console.log("\tmodeloffset0 is: "+  modelOffset[0]);
+
                         modelOffset[0] *= i;
-                        console.log("\tmodeloffset1 is: "+  modelOffset[1]);
                         modelOffset[1] *= j;
-                        console.log("\tmodeloffset2 is: "+  modelOffset[2]);
                         modelOffset[2] *= j;
                         console.log("offsetting " + model[i][j].name + " (#" + j + ") by X: " + modelOffset[0] + " Y: " + modelOffset[1] + " Z: " + modelOffset[2]);
                         model[i][j].draw(null, modelOffset, 0);
@@ -184,8 +178,6 @@ function main(){
                     else  
                         model[i][j].draw(null, null, 0);
                 }
-
-                
             }
 
             // gl.useProgram(null);
@@ -332,7 +324,7 @@ function main(){
         var count = 6;
         for (var i=0; i<6;i++){
             var img = new Image();
-            imgs[i] = img;
+            imgs[i] = texturefiles[i];
             img.onload = function() {
                 if (!isPowerOfTwo(img.width) || !isPowerOfTwo(img.height)) 
                 {
