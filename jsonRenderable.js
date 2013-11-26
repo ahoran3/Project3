@@ -24,7 +24,7 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
     this.name = model_name;
     this.completedPlacementShift = false;
     this.howMany = num;
-    this.draw = function (mMatrix, T, isShadow) {
+    this.draw = function (mMatrix, T, lightType, alpha) {
         var mM, nM;
         var i, j, nMeshes, node;
         var nNodes = model.nodes.length;
@@ -46,10 +46,26 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
             for (var j = 0; j < nMeshes; j++) {
                 var meshIndex = node.meshIndices[j];
                 var materialIndex = model.meshes[meshIndex].materialIndex;
-				if (isShadow == true)
-					gl.uniform1i(program.uniformLocations["shadow"], 1);
+				switch (lightType)
+				{
+					// "regular" model
+					case 0: gl.uniform1i(program.uniformLocations["lightType"], 0); break;
+					
+					// projection shadow of model
+					case 1: gl.uniform1i(program.uniformLocations["lightType"], 1); break;
+					
+					// reflected model
+					case 2: gl.uniform1i(program.uniformLocations["lightType"], 2); break;
+					
+					// normal mapped surface
+					case 3: gl.uniform1i(program.uniformLocations["lightType"], 3); break;
+				}
+				
+				addMessage(alpha);
+				if (alpha != null)
+					gl.uniform1f(program.uniformLocations["alpha"], .95);
 				else
-					gl.uniform1i(program.uniformLocations["shadow"], 0);
+					gl.uniform1f(program.uniformLocations["alpha"], 1.0);
 					
                 if(model.materials)
                 {
