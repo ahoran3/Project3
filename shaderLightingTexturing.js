@@ -9,15 +9,18 @@ function createShaderProgram(gl)
 	  'attribute vec3 position;\n' +
 	  'attribute vec3 normal;\n' +
 	  'attribute vec2 texCoord;\n' +
+	  'attribute vec3 a_Tangent;\n'+ // todo pass in this val
 	  'uniform mat4 projT,viewT,modelT,normalT;\n'+
 	  'uniform vec3 eyePosition;\n'+ // World space coordinate or eye
 	  'varying vec2 tCoord;\n'+
 	  'varying vec3 fragPosition,fragNormal, fragViewDir;\n'+
+	  'varying vec3 tangentVec;\n'+
 	  'void main() {\n' +
 	  '  fragPosition = (viewT*modelT*vec4(position,1.0)).xyz;\n' +
 	  '  fragNormal = normalize((viewT*vec4(normal,0.0)).xyz);\n'+
 	  '  fragViewDir = position.xyz - eyePosition;\n'+
 	  '  tCoord = texCoord;\n'+
+	  '  tangentVec = (modelT * modelV * vec4(a_Tangent, 0.0)).xyz;\n'+
 	  '  gl_Position = projT*viewT*modelT*vec4(position,1.0);\n' +
 	  '}\n';
 
@@ -31,16 +34,17 @@ function createShaderProgram(gl)
 	  'uniform int shadow;\n'+
 	  'varying vec2 tCoord;\n'+
 	  'varying vec3 fragPosition,fragNormal, fragViewDir;\n'+
+	  'varying vec3 tangentVec;\n'+
 	  'void main() {\n' +
 	  '	 float costheta = 1.0;\n'+
-	 '  vec3 viewDir = normalize(fragViewDir);\n'+
-	 '	vec3 normal = normalize(fragNormal);\n' +
-	  '	vec3 reflectDirection = reflect(viewDir,normal);\n' +
-	  ' vec3 texColor= textureCube(cubeTex, reflectDirection).rgb;\n' +
-	  ' if (shadow != 1){\n'+
+	  '  vec3 viewDir = normalize(fragViewDir);\n'+
+	  '	 vec3 normal = normalize(fragNormal);\n' +
+	  '	 vec3 reflectDirection = reflect(viewDir,normal);\n' +
+	  '  vec3 texColor= textureCube(cubeTex, reflectDirection).rgb;\n' +
+	  '  if (shadow != 1){\n'+
 	  '		gl_FragColor = vec4(texColor*diffuseCoeff*costheta,1.0);\n' +
-	  '	}\n'+
-	  '	else {\n' +
+	  '	 }\n'+
+	  '	 else {\n' +
 	  '		gl_FragColor = vec4(0.0,0.0,0.0,.95);\n' +
 	  '	}\n'+
 	  '}\n';
