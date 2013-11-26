@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html>
 <head charset="UTF-8">
-<title>Project 3</title>
+<title>CAP 4720 - Project 3</title>
 <link rel="stylesheet" type="text/css" href="lib/style.css">
 <script src="lib/webgl-utils.js"></script>
 <script src="lib/webgl-debug.js"></script>
@@ -17,34 +17,40 @@
 <script src="camera.js"></script>
 </head>
 <body onload="main();">
+<section>
 <h2>Project 3</h2>
+<h3>
 Brandon Forster, Matt Hansen, and Alex Horan
-<br><canvas id="myCanvas1" width="600px" height="600px" style="border:1px solid #FF0000; background: pink"></canvas>
-<!-- <br>Model:<select id="modelList" onchange="newModelFlag=true;">
-  <option value="teapot">teapot</option>
-  <option value="skull">skull</option>
-  <option value="House">House</option>
-</select> -->
-<br/>Models:
-<input type="checkbox" id="checkbox_teapot" value="teapot" onclick="ModelFlag=true;"/>Teapot
-<input type="checkbox" id="checkbox_house" value="house" onclick="ModelFlag=true;"/>House
-<input type="checkbox" id="checkbox_cube" value="cube" onclick="ModelFlag=true;"/>Cube
+</h3>
+</section>
+<br><canvas id="myCanvas1" width = "900px" height = "500px"></canvas>
 
-<br/>Environment:<select id="environmentList" onchange="changeEnvironmentFlag=true;">
+<h3>Controls
+</h3>
+
+<section>
+Models:
+<input type="checkbox" id="checkbox_teapot" value="teapot" onclick="ModelFlag=true;"/>Chruch
+<input type="checkbox" id="checkbox_house" value="house" onclick="ModelFlag=true;"/>House
+<!-- <input type="checkbox" id="checkbox_cube" value="cube" onclick="ModelFlag=true;"/>Cube -->
+
+<!-- <br/>Environment:<select id="environmentList" onchange="changeEnvironmentFlag=true;">
   <option value="skybox">sky</option>
   <option value="colosseum">colosseum</option>
   <option value="pier">pier</option>
   <option value="St.Peter's">St.Peter's</option>
-</select>
+</select> -->
+<br/>
 Dolly:<input type='button' value='+' onclick="dollyRequired=1;"/>
 	<input type='button' value='-' onclick="dollyRequired=-1;"/>
 <br>	
-Light Position X:<input type="range" name="lightPosX" value="3" min="-3" max="3" step=".1" oninput="lightPosX=this.value;">		
-<br>
+Light Position X:<input type="range" id="range" name="lightPosX" value="3" min="-3" max="3" step=".1" oninput="lightPosX=this.value;">		
+<br/>
 Light Position Y:<input type="range" name="lightPosY" value="3" min=".2" max="3" step=".1" oninput="lightPosY=this.value;">		
 <br>
 Light Position Z:<input type="range" name="lightPosY" value="3" min="-3" max="3" step=".1" oninput="lightPosZ=this.value;">		
 <br>
 Toggle Rotate: <input type='button' value='Toggle' onclick="toggleRotateFlag();"/>	
+</section>
 </body>
 </html>

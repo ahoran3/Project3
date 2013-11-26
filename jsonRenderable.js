@@ -359,8 +359,8 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
         console.log(model_name + "'s diagonal is " +model.diagonal);
 
         //set constant dimensions for camera 
-        dim.min = [-30,-15, -30];
-        dim.max = [30, 15, 30];
+        dim.min = [-20,-10, -20];
+        dim.max = [20, 10, 20];
 
         //allows for inexpensive data look
         this.bounds_diag = temp_diag;

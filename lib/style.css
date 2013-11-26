@@ -1,8 +1,41 @@
 body {
-    background: url('BG.jpg') 0 0;
+    margin-left: 20px;
+    background: url('BG.png') 0 0;
+    font-color: #FFF;
+    width: auto;
 }
+#myCanvas1
+{   
+    background: pink;
+    width: 80%;
+    height:40%;
+    border: 1px, solid #FF0000;
+    -webkit-border-radius: 25px;
+       -moz-border-radius: 25px;
+            border-radius: 25px;
+    
+}
+h2, h3
+{
+    font: Consolas;
+    margin:0px;
+    color: #F6F6F6;
+}
+section 
+{
+    width:70%;
+    color: #F3F3F3;
+    margin: 15px;
+    margin-left: 40px;
+    padding: 10px;
+    background-color: rgba(0,0,0,.2);
+    -webkit-border-radius: 15px;
+       -moz-border-radius: 15px;
+             border-radius: 15px;
 
-textarea {
+}
+textarea 
+{
     border: thin solid black;
     position: relative;
     left: 5px;

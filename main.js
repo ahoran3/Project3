@@ -271,7 +271,7 @@ function main(){
             //i>0 because we dont want to consider floor's seperationDistance
             if(i>0 && model[i][0].bounds_diag > seperationDistance)
             {
-                seperationDistance = model[i][0].bounds_diag;
+                seperationDistance = model[i][0].bounds_diag*1.3;
                 modelOffset = [seperationDistance, 0, seperationDistance];
                 console.log("new high seperationDist from " + model[i][0].name +" of: " + seperationDistance);
             }
