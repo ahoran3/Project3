@@ -37,7 +37,7 @@ function createShaderProgram(gl)
 	  '	vec3 normal = normalize(fragNormal);\n' +
 	  '	vec3 reflectDirection = reflect(viewDir,normal);\n' +
 	  ' if (drawType == 2){\n'+	//TEXTURE
-	  //'       vec3 texColor = texture2D(diffuseTex, vec2(tCoord.s, tCoord.t)).rgb\n' +
+	  //'       vec3 texColor = texture2D(diffuseTex, vec2(tCoord.s, tCoord.t)).rgb;\n' +
 	  '       vec3 texColor= textureCube(cubeTex, reflectDirection).rgb;\n' +
 	  '		gl_FragColor = vec4(texColor*diffuseCoeff*costheta,1.0);\n' +
 	  '	}\n'+
