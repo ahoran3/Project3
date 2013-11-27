@@ -14,7 +14,7 @@ function Camera(gl,program,d,modelUp) // Compute a camera from model's bounding 
 	var up = [modelUp[0],modelUp[1],modelUp[2]];
 	var near = diagonal*0.3;
 	var far = diagonal*8;
-	var FOV = 42;
+	var FOV = 36;
 	this.dolly=function(delta){
 		var m = this.getViewMatrix();
 		var W = [m.elements[2],m.elements[6],m.elements[10]];

@@ -42,14 +42,14 @@ function main(){
 
     texCubeObj = loadCubemap(gl,'lib/skybox/', ['posx.jpg','negx.jpg','posy.jpg','negy.jpg','posz.jpg','negz.jpg']);
     if(texCubeObj == null){
-        console.log("problem loading the Environment.");
+        // console.log("problem loading the Environment.");
     }
 
     gl.clearColor(0,0,0,1);
     drawScene();
     return 1;
     function drawScene(){
-        // console.log ("draw function");
+        // // console.log ("draw function");
         gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT ); 
 		gl.useProgram(program);
 		
@@ -58,16 +58,16 @@ function main(){
 	
         if (ModelFlag)
 		{
-            console.log("model flag triggered!\n");
+            // console.log("model flag triggered!\n");
             model = addNewModel();
             ModelFlag = false;
-            console.log("gettingout of addmodel");
+            // console.log("gettingout of addmodel");
 		}    
 
         if(ReflectionChange)
         {   
-            console.log("reflection is " + ReflectionFlag);
-            console.log("switching from " + model[0][0].name);
+            // console.log("reflection is " + ReflectionFlag);
+            // console.log("switching from " + model[0][0].name);
             if(model[0][0].name == "ground") 
             {
                 activeModels.shift("ground");
@@ -80,7 +80,7 @@ function main(){
             }
             model = addNewModel();
             ReflectionChange = false;
-            console.log("new model0 is " + model[0][0].name);
+            // console.log("new model0 is " + model[0][0].name);
         }
 
         if (changeEnvironmentFlag)
@@ -104,7 +104,7 @@ function main(){
 		
 		//compute a model matrix to translate the floor
 		var floorMMatrix = new Matrix4();
-		// console.log("setting up stenciling");
+		// // console.log("setting up stenciling");
 		gl.enable(gl.STENCIL_TEST);
 		gl.stencilOp(gl.REPLACE, gl.REPLACE, gl.REPLACE);
 		gl.stencilFunc(gl.ALWAYS, 1, 0xFF);
@@ -119,20 +119,19 @@ function main(){
 
         if (ReflectionFlag)    	
         // draw blended floor
-        //items[items.indexOf(3452)] = 1010;
-    		model[0][0].draw(floorMMatrix, floorOffset, 2, .85);
+    		model[0][0].draw(floorMMatrix, floorOffset, 2, .90);
         
 		
 
 		gl.depthMask(true);
-        // console.log("setting up shadowing");
+        // // console.log("setting up shadowing");
 		
         //Draw Shadow and Reflection objects
         for(var i=1; i<model.length; i++)
 		{
             for(var j=0; j<model[i].length; j++)
             {
-                // console.log("in shadowing");
+                // // console.log("in shadowing");
                 // Q is any point on the mirror plane
                 // N is the normal to the mirror plane
                 var Q = [0,model[i][0].bounds_min[1],0,1];
@@ -148,7 +147,7 @@ function main(){
 				
                 if(ReflectionFlag)
     				// reflection
-                    model[i][j].draw(reflectionMatrix, null, 2, .8);
+                    model[i][j].draw(reflectionMatrix, null, 2, .90);
     				
 				// shadow
                 model[i][j].draw(shadowProjMatrix, null, 1, 1);
@@ -160,11 +159,11 @@ function main(){
 
 		gl.useProgram(program);
         
-        // console.log("about to draw "+ model.length +" real objs");
+        // // console.log("about to draw "+ model.length +" real objs");
         //Draw real objects
         for(var i=1; i<model.length; i++)
         {
-            // console.log ("drawing all instances of model type " + model[i][0].name);
+            // // console.log ("drawing all instances of model type " + model[i][0].name);
             for(var j=0; j<model[i].length;j++)
             {   
                 //Special Case for the house model. Unfortunatley, it is oriented differently.
@@ -177,7 +176,7 @@ function main(){
                         modelOffset[0] *= i;
                         modelOffset[1] *= -j;
                         modelOffset[2] *= j;
-                        console.log("offsetting " + model[i][j].name + " (#" + j + ") by X: " + modelOffset[0] + " Y: " + modelOffset[1] + " Z: " + modelOffset[2]);
+                        // console.log("offsetting " + model[i][j].name + " (#" + j + ") by X: " + modelOffset[0] + " Y: " + modelOffset[1] + " Z: " + modelOffset[2]);
                         model[i][j].draw(null, modelOffset, 2, 1);
                         model[i][j].completedPlacementShift = true;
                         modelOffset = [seperationDistance, seperationDistance, 0];
@@ -197,7 +196,7 @@ function main(){
                         modelOffset[0] *= i;
                         modelOffset[1] *= j;
                         modelOffset[2] *= j;
-                        console.log("offsetting " + model[i][j].name + " (#" + j + ") by X: " + modelOffset[0] + " Y: " + modelOffset[1] + " Z: " + modelOffset[2]);
+                        // console.log("offsetting " + model[i][j].name + " (#" + j + ") by X: " + modelOffset[0] + " Y: " + modelOffset[1] + " Z: " + modelOffset[2]);
                         model[i][j].draw(null, modelOffset, 0, 1);
                         model[i][j].completedPlacementShift = true;
                         modelOffset = [seperationDistance, 0, seperationDistance];
@@ -232,11 +231,11 @@ function main(){
             //if model is checked and it does not already exist in the active models list, add it.
             if(document.getElementById("checkbox_teapot").checked == true && elem_spot == -1){
                 activeModels.push("teapot");
-                console.log ("adding teapot");
+                // console.log ("adding teapot");
             }
             if(document.getElementById("checkbox_teapot").checked == false && elem_spot != -1){
                 activeModels.splice(elem_spot, 1);
-                console.log ("deleting teapot");
+                // console.log ("deleting teapot");
             }
 
             //HOUSE
@@ -246,12 +245,12 @@ function main(){
             }
             if(document.getElementById("checkbox_house").checked == false && elem_spot != -1){
                 activeModels.splice(elem_spot, 1);
-                console.log ("deleting house");
+                // console.log ("deleting house");
             }
 
-            console.log (activeModels.length + " active models: ");
+            // console.log (activeModels.length + " active models: ");
             for(var i=0; i < activeModels.length; i++)
-                console.log("\t" + activeModels[i] + " at index " + i);
+                // console.log("\t" + activeModels[i] + " at index " + i);
             if(activeModels.length == 0)
                 addNewModel();
             return activeModels;
@@ -267,7 +266,7 @@ function main(){
                 model_Instance[i] = new JsonRenderable(gl, program, model_name, "model.json");
             }
             if (!model_Instance){
-                console.log ("No model could be read");
+                // console.log ("No model could be read");
                 return;
             }
             else
@@ -289,9 +288,9 @@ function main(){
 
             var bounds = model[i][0].getBounds();
             
-            console.log("\t (" + model[i].length + ") " + model[i][0].name + " at model index " + i);
+            // console.log("\t (" + model[i].length + ") " + model[i][0].name + " at model index " + i);
 
-            console.log (model[i][0].name + "'s seperation dist :" + model[i][0].bounds_diag);
+            // console.log (model[i][0].name + "'s seperation dist :" + model[i][0].bounds_diag);
             
             //determine largest models diameter so that
             //we can place models without them overlapping. 
@@ -300,7 +299,7 @@ function main(){
             {
                 seperationDistance = model[i][0].bounds_diag*1.3;
                 modelOffset = [seperationDistance, 0, seperationDistance];
-                console.log("new high seperationDist from " + model[i][0].name +" of: " + seperationDistance);
+                // console.log("new high seperationDist from " + model[i][0].name +" of: " + seperationDistance);
             }
 
             camera = new Camera(gl,program,bounds,[0,1,0]);
@@ -313,7 +312,7 @@ function main(){
 
     function chooseEnvironment(choice)
     {
-        console.log ("chose" + choice);
+        // console.log ("chose" + choice);
         texCubeObj = loadCubemap(gl,'lib/'+choice+'/', ['posx.jpg','negx.jpg','posy.jpg','negy.jpg','posz.jpg','negz.jpg']);
     }
 
@@ -434,5 +433,5 @@ function main(){
 }
 
 function addMessage(m){
-		console.log(m);
+		// console.log(m);
 }

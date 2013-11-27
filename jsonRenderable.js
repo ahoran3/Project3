@@ -82,7 +82,7 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
                 }
                 else gl.uniform1i(program.uniformLocations["texturingEnabled"], 0);
                 meshDrawables[j].draw();
-                // console.log("Drawing " + model_name + "'s meshes")
+                // // console.log("Drawing " + model_name + "'s meshes")
 ;            }
         }
     }
@@ -133,7 +133,7 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
             var tex = gl.createTexture();
             tex.width = 0; tex.height = 0;
             var img = new Image();
-            //console.log("From Loader: "+textureFileName);
+            //// console.log("From Loader: "+textureFileName);
             //imagecount++;
             img.onload = function () {
 			    function isPowerOfTwo(x) {
@@ -147,7 +147,7 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
 			        return x + 1;
 			    }
 			    var nPOT = false; // nPOT: notPowerOfTwo
-			    //console.log(textureFileName+" loaded : "+img.width+"x"+img.height);
+			    //// console.log(textureFileName+" loaded : "+img.width+"x"+img.height);
 			    tex.complete = img.complete;
 			    //gl.activeTexture(gl.TEXTURE0);
 			    gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -161,7 +161,7 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
 			        var ctx = canvas.getContext("2d");
 			        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 			        img = canvas;
-			        //console.log(" Scale to POT : "+img.width+"x"+img.height);
+			        //// console.log(" Scale to POT : "+img.width+"x"+img.height);
 			    }
 
 			    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
@@ -175,7 +175,7 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
 			    gl.bindTexture(gl.TEXTURE_2D, null);
 			    tex.width = img.width;
 			    tex.height = img.height;
-			    //imagecount--; //console.log("From Loader: "+imagecount);
+			    //imagecount--; //// console.log("From Loader: "+imagecount);
 			};
 
             img.src = textureFileName;
@@ -192,7 +192,7 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
                     var filename = model.materials[i].diffuseTexture[0];//.replace(".tga",".jpg");
                     if (filename) 
                     {
-                        //console.log(filename);
+                        //// console.log(filename);
                         if (imageDictionary[filename] === undefined) 
                         {
                             imageDictionary[filename] = setTexture(gl, "./lib/model/"+model_name+"/models/" + filename);
@@ -216,7 +216,7 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
             if (vArrays[i] && (vArrays[i].length == nElements[i] * nVertices)) {
                 vertexBuffers[i] = gl.createBuffer();
                 if (!vertexBuffers[i]) {
-                    console.log('Failed to create the buffer object');
+                    // console.log('Failed to create the buffer object');
                     return null;
                 }
                 // Bind the buffer object to an ARRAY_BUFFER target
@@ -234,11 +234,11 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
                 gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vArrays[i]), gl.STATIC_DRAW);
             }
             else {
-                console.log('No data');
+                // console.log('No data');
                 vertexBuffers[i] = null;
             }
         }
-        //console.log(nElements);
+        //// console.log(nElements);
         var indexBuffer = null;
         if (indexArray) {
             indexBuffer = gl.createBuffer();
@@ -316,7 +316,7 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
         for (var k = 0; k < nNodes; k++) {
             var m = new Matrix4();
             if (model.nodes) m.elements = new Float32Array(model.nodes[k].modelMatrix);
-            //console.log(model.nodes[k].modelMatrix);
+            //// console.log(model.nodes[k].modelMatrix);
             var nMeshes = (model.nodes) ? model.nodes[k].meshIndices.length : model.meshes.length;
             for (var n = 0; n < nMeshes; n++) {
                 var index = (model.nodes) ? model.nodes[k].meshIndices[n] : n;
@@ -324,8 +324,8 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
                 for (var i = 0; i < mesh.vertexPositions.length; i += 3) {
                     var vertex = m.multiplyVector4(new Vector4([mesh.vertexPositions[i], mesh.vertexPositions[i + 1], mesh.vertexPositions[i + 2], 1])).elements;
                     //if (i==0){
-                    //	console.log([mesh.vertexPositions[i],mesh.vertexPositions[i+1],mesh.vertexPositions[i+2]]);
-                    //	console.log([vertex[0], vertex[1], vertex[2]]);
+                    //	// console.log([mesh.vertexPositions[i],mesh.vertexPositions[i+1],mesh.vertexPositions[i+2]]);
+                    //	// console.log([vertex[0], vertex[1], vertex[2]]);
                     //}
                     if (firstvertex) {
                         xmin = xmax = vertex[0];
@@ -353,8 +353,8 @@ function JsonRenderable(gl, program, model_name, modelfilename, num) {
         temp_max = dim.max;
         temp_diag = model.diagonal;
 
-        console.log(model_name + "'s unaltered dimensions are " + dim.min+ ", "+ dim.max);
-        console.log(model_name + "'s diagonal is " +model.diagonal);
+        // console.log(model_name + "'s unaltered dimensions are " + dim.min+ ", "+ dim.max);
+        // console.log(model_name + "'s diagonal is " +model.diagonal);
 
         //set constant dimensions for camera 
         dim.min = [-20,-10, -20];
